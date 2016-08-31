@@ -10,15 +10,36 @@ import time as t
 from time import sleep
 import datetime
 import copy
-from apscheduler.scheduler import Scheduler
 
+from flask_apscheduler import APScheduler
 import requests
 from flask import Flask, request
 
-app = Flask(__name__)
+class Config(object):
+    JOBS = [
+        {
+            'id': 'job1',
+            'func': '__main__:job1',
+            'args': (1, 2),
+            'trigger': 'interval',
+            'seconds': 10
+        }
+    ]
 
-sched = Scheduler()
-sched.start()        # start the scheduler
+    SCHEDULER_VIEWS_ENABLED = True
+
+def job1(a, b):
+    print(str(a) + ' ' + str(b))
+	
+app = Flask(__name__)
+app.config.from_object(Config())
+app.debug = True
+
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+app.run()
 
 @app.route('/', methods=['GET'])
 def verify():
@@ -188,15 +209,10 @@ def tweet():
 			  'w') as outfile:
 		json.dump(dump, outfile)
 
-def main():
-    # job = sched.add_date_job(my_job, datetime(2013, 8, 5, 23, 47, 5), ['text'])
-    job = sched.add_interval_job(tweet, seconds=10)
-    while True:
-        sleep(1)
-        sys.stdout.write('.'); sys.stdout.flush()
+
 		
 if __name__ == '__main__':
-	main()
+	app.run(debug=True)
 
 	
 
