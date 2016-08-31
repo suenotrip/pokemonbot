@@ -30,7 +30,7 @@ class Config(object):
 
 def job1(a, b):
     print(str(a) + ' ' + str(b))
-	log('scedule method called'))
+	log('scedule method called')
 	
 app = Flask(__name__)
 #app.config.from_object(Config())
