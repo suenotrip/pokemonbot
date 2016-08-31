@@ -32,8 +32,8 @@ def job1(a, b):
     print(str(a) + ' ' + str(b))
 	
 app = Flask(__name__)
-app.config.from_object(Config())
-app.debug = True
+#app.config.from_object(Config())
+#app.debug = True
 
 scheduler = APScheduler()
 scheduler.init_app(app)
@@ -212,4 +212,5 @@ def tweet():
 
 		
 if __name__ == '__main__':
+	app.config.from_object(Config())
 	app.run(debug=True)
