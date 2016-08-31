@@ -19,7 +19,6 @@ app = Flask(__name__)
 
 sched = Scheduler()
 sched.start()        # start the scheduler
-main()
 
 @app.route('/', methods=['GET'])
 def verify():
