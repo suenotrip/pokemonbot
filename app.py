@@ -29,8 +29,8 @@ class Config(object):
     SCHEDULER_VIEWS_ENABLED = True
 
 def job1(a, b):
-    print(str(a) + ' ' + str(b))
-	log('scedule method called')
+    print str(a) + ' ' + str(b)
+    log('scedule method called')
 	
 app = Flask(__name__)
 #app.config.from_object(Config())
@@ -39,7 +39,8 @@ app = Flask(__name__)
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
-
+app.config.from_object(Config())
+app.run(debug=True)
 #app.run()
 
 @app.route('/', methods=['GET'])
@@ -212,6 +213,6 @@ def tweet():
 
 
 		
-if __name__ == '__main__':
-	app.config.from_object(Config())
+#if __name__ == '__main__':
+	#app.config.from_object(Config())
 	app.run(debug=True)
