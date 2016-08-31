@@ -110,7 +110,7 @@ def tweet():
 			  './pokemon.fr.json')) as data_file:
 		idToPokemon = json.load(data_file)
 		
-	url = 'http://09946dde.ngrok.io' + '/rare'
+	url = 'http://127.0.0.1:5000' + '/rare'
 	response = urllib.urlopen(url)
 	dump = json.loads(response.read())
 	new = copy.deepcopy(dump)
