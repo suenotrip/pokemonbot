@@ -33,8 +33,8 @@ def job1(a, b):
     log('scedule method called')
 	
 app = Flask(__name__)
-#app.config.from_object(Config())
-#app.debug = True
+app.config.from_object(Config())
+app.debug = True
 
 scheduler = APScheduler()
 scheduler.init_app(app)
@@ -213,6 +213,6 @@ def tweet():
 
 
 		
-#if __name__ == '__main__':
+if __name__ == '__main__':
 	#app.config.from_object(Config())
-	app.run(debug=True)
+	app.run(debug=True,port=5000)
