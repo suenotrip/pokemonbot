@@ -34,14 +34,12 @@ def job1(a, b):
 	
 app = Flask(__name__)
 app.config.from_object(Config())
-app.debug = True
+#app.debug = True
 
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
-app.config.from_object(Config())
-app.run(debug=True)
-#app.run()
+
 
 @app.route('/', methods=['GET'])
 def verify():
