@@ -20,7 +20,7 @@ class Config(object):
         {
             'id': 'job1',
             'func': '__main__:job1',
-            'args': (1, 2),
+			'args': (1, 2),
             'trigger': 'interval',
             'seconds': 10
         }
@@ -31,6 +31,7 @@ class Config(object):
 def job1(a, b):
     print str(a) + ' ' + str(b)
     log('scedule method called')
+    tweet()
 	
 app = Flask(__name__)
 app.config.from_object(Config())
@@ -165,7 +166,7 @@ def tweet():
 			print str(t.time() + 300) + ' vs ' \
 				+ str(e_new['disappear_time'] / 1000)
 				
-			send_message('1661666914149514', 'thanks')
+			send_message('1162610060480372', 'thanks')
 			
 			if t.time() + 300 < e_new['disappear_time'] / 1000:
 				location = str(Geocoder.reverse_geocode(e_new['latitude'
