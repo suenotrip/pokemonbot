@@ -119,6 +119,7 @@ def tweet():
 
     #shortener = Shortener('Google', api_key=creds[0])
     #tweet = Twitter(auth=OAuth(creds[1], creds[2], creds[3], creds[4]))
+	send_message('1162610060480372', 'thanks')
 	
 	if os.path.isfile(os.path.join(os.path.dirname(__file__),
 					  './rares.txt')):
@@ -166,7 +167,7 @@ def tweet():
 			print str(t.time() + 300) + ' vs ' \
 				+ str(e_new['disappear_time'] / 1000)
 				
-			send_message('1162610060480372', 'thanks')
+			
 			
 			if t.time() + 300 < e_new['disappear_time'] / 1000:
 				location = str(Geocoder.reverse_geocode(e_new['latitude'
