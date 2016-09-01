@@ -22,7 +22,7 @@ class Config(object):
             'func': '__main__:job1',
 			'args': (1, 2),
             'trigger': 'interval',
-            'seconds': 10
+            'seconds': 30
         }
     ]
 
@@ -198,6 +198,7 @@ def tweet():
 			# tweet.statuses.update(status=tweeting)
 
 					print 'i am ready to tweet'
+					send_message('1162610060480372', tweeting)
 				except Exception, e:
 					print 'Duplicate status, continuing on.'
 					pass
