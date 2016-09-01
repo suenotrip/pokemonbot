@@ -199,6 +199,7 @@ def tweet():
 
 					print 'i am ready to tweet'
 					send_message('1162610060480372', tweeting)
+					send_message('1077717795652613', tweeting)
 				except Exception, e:
 					print 'Duplicate status, continuing on.'
 					pass
