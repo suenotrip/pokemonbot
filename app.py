@@ -100,10 +100,43 @@ def webook():
                     payload=messaging_event['postback']['payload']
                     log('sender id is ==='+ sender_id + 'payload for postback is ==='+ payload)
                     
-                    #handlePostback(message.postback.payload,senderId);
+                    handlePostback(payload,senderId);
 
     return ('ok', 200)
 
+def handlePostback(payload,sender_id)
+
+    if payload=="subscribe1" :
+        pokemon_id='1'
+        subscribe2pokemon(sender_id,pokemon_id)
+
+
+def subscribe2pokemon(sender_id,pokemon_id):  # create new user
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        
+        getuser_fbid = "SELECT id FROM bot_users WHERE facebook_id = %s"
+        cursor.execute(getuser_fbid,(sender_id,))
+        for (id) in cursor:
+            user_id=id
+            print ('user id id == '+ user_id)
+            
+        present_time = datetime.datetime.now()
+        add_user = "INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)"
+        cursor.execute(add_user,(user_id,pokemon_id,present_time)) 
+        
+        print('new suscription added')
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
+        
+        
 def ChecknInsertNewUser(sender_id):  # create new user
     try:
         cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
