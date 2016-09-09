@@ -91,7 +91,7 @@ def webook():
                                   database='restokit_pokemon')
                         cursor = cnx.cursor()
                         check_user = "SELECT * FROM bot_users WHERE facebook_id = %s"
-                        cursor.execute(check_user,(sender_id))
+                        cursor.execute(check_user,sender_id)
                         results = cursor.fetchone()
                         if results =='1':
                             print 'yep user exists'
