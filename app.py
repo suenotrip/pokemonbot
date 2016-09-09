@@ -91,12 +91,12 @@ def webook():
                     sender_id = messaging_event['sender']['id']  # the facebook ID of the person sending you the message
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event['message']['text']  # the message's text
-                    name='amit'
+                    myname='amit'
                     cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
                               host='restokitch.com',
                               database='restokit_pokemon')
                     cursor = cnx.cursor()
-                    add_user = "INSERT INTO bot_users (name, facebook_id) VALUES (%s, %s)" % (name, sender_id)
+                    add_user = "INSERT INTO bot_users (name, facebook_id) VALUES (%s, %s)" % (myname, sender_id)
                     cursor.execute(add_user)
                     cursor.close()
                     cnx.close()
