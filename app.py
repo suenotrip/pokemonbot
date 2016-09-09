@@ -104,7 +104,7 @@ def webook():
 
     return ('ok', 200)
 
-def handlePostback(payload,sender_id)
+def handlePostback(payload,sender_id) :
 
     if payload=="subscribe1" :
         pokemon_id='1'
