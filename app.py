@@ -106,7 +106,7 @@ def webook():
 
     return ('ok', 200)
 
-def rules4messages(sender_id,message_text)
+def rules4messages(sender_id,message_text) :
     if message_text=='unsubscribe':
         sendList2Unsubscribe(sender_id)
 
