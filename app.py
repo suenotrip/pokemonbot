@@ -34,16 +34,6 @@ class Config(object):
 def job1(a, b):
     print str(a) + ' ' + str(b)
     log('scedule method called')
-    cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
-                          host='restokitch.com',
-                          database='restokit_pokemon')
-    cursor = cnx.cursor()
-    add_user = ("INSERT INTO bot_users "
-               "(name,facebook_id) "
-               "VALUES ('amit','123')")
-    cursor.execute(add_user)
-    cursor.close()
-    cnx.close()
     tweet()
 	
 app = Flask(__name__)
@@ -100,6 +90,14 @@ def webook():
                                   host='restokitch.com',
                                   database='restokit_pokemon')
                         cursor = cnx.cursor()
+                        check_user = "SELECT * FROM bot_users WHERE facebook_id = sender_id"
+                        cursor.execute(check_user)
+                        results = cursor.fetchone()
+                        if results =='1':
+                            print 'yep user exists'
+                        else:
+                            print 'nope not exists'
+                            
                         add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
                         cursor.execute(add_user,(myname,sender_id))
                         cursor.close()
