@@ -120,8 +120,10 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
         
         getuser_fbid = "SELECT id FROM bot_users WHERE facebook_id = %s"
         cursor.execute(getuser_fbid,(sender_id,))
-        for (id) in cursor:
-            user_id=id
+        result_set = cursor.fetchall()
+        for row in result_set:
+            print "%s" % (row["id"])
+            user_id=row["id"]
 
         present_time = datetime.now()
         add_user = "INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)"
