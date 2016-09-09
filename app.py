@@ -86,8 +86,7 @@ def webook():
                         rules4messages(sender_id,message_text)
                     
                     
-                    send_message(sender_id, 'got it, thanks!')
-                    sendList2subscribe(sender_id)
+                    
                     #check if the user exists. if not insert a user into database
                     ChecknInsertNewUser(sender_id)
                             
@@ -109,6 +108,9 @@ def webook():
 def rules4messages(sender_id,message_text) :
     if message_text=='unsubscribe':
         sendList2Unsubscribe(sender_id)
+    else :
+        send_message(sender_id, 'Welcome to pokemonbot!')
+        sendList2subscribe(sender_id)
 
 
 
