@@ -34,6 +34,7 @@ class Config(object):
 def job1(a, b):
     print str(a) + ' ' + str(b)
     log('scedule method called')
+    
     tweet()
 	
 app = Flask(__name__)
@@ -95,8 +96,14 @@ def webook():
                         msg = cursor.fetchone()
                         if not msg:
                             print 'nope not exists'
+                            accesstoken=os.environ['PAGE_ACCESS_TOKEN']
+                            r = requests.get('https://graph.facebook.com/v2.6/'+sender_id+'?access_token='+accesstoken)
+                            data=r.json()
+                            first_name=data['first_name']
+                            print (first_name)
+                            
                             add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
-                            cursor.execute(add_user,(myname,sender_id))      
+                            cursor.execute(add_user,(first_name,sender_id))      
                         else:
                             print 'yep user exists'
                         
