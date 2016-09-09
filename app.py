@@ -123,7 +123,7 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
         result_set = cursor.fetchall()
         for row in result_set:
             #print "%s" % (row["id"])
-            user_id=row["id"]
+            user_id=row[0]
 
         present_time = datetime.now()
         add_user = "INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)"
