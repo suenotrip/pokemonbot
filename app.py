@@ -92,17 +92,22 @@ def webook():
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event['message']['text']  # the message's text
                     myname='amit'
-                    cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
-                              host='restokitch.com',
-                              database='restokit_pokemon')
-                    cursor = cnx.cursor()
-                    add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
-                    cursor.execute(add_user,(myname,sender_id))
-                    cursor.close()
-                    cnx.close()
-                   
-
+                    
                     send_message(sender_id, 'got it, thanks!')
+                    
+                    try:
+                        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                                  host='restokitch.com',
+                                  database='restokit_pokemon')
+                        cursor = cnx.cursor()
+                        add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
+                        cursor.execute(add_user,(myname,sender_id))
+                        cursor.close()
+                        cnx.close()
+                    except mysql.connector.Error as err:
+                        print("Something went wrong: {}".format(err))
+                   
+                    
 
                 if messaging_event.get('delivery'):  # delivery confirmation
                     pass
