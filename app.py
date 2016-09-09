@@ -81,11 +81,11 @@ def webook():
 
                     sender_id = messaging_event['sender']['id']  # the facebook ID of the person sending you the message
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
-                    message_text = messaging_event['message']['text']  # the message's text
+                    #message_text = messaging_event['message']['text']  # the message's text
                     
                     
                     send_message(sender_id, 'got it, thanks!')
-                    #send_generic_template(sender_id)
+                    send_generic_template(sender_id)
                     #check if the user exists. if not insert a user into database
                     ChecknInsertNewUser(sender_id)
                             
@@ -100,7 +100,7 @@ def webook():
                     payload=messaging_event['postback']['payload']
                     log('sender id is ==='+ sender_id + 'payload for postback is ==='+ payload)
                     
-                    handlePostback(payload,sender_id);
+                    handlePostback(payload,sender_id)
 
     return ('ok', 200)
 
