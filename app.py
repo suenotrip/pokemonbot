@@ -114,7 +114,7 @@ def rules4messages(sender_id,message_text) :
     else :
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
         send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
-        subscriptionCount(sender_id)
+        #subscriptionCount(sender_id)
         sendList2subscribe(sender_id)
 
 
