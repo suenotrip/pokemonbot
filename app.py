@@ -85,7 +85,7 @@ def webook():
                     
                     
                     send_message(sender_id, 'got it, thanks!')
-                    send_generic_template(sender_id)
+                    #send_generic_template(sender_id)
                     #check if the user exists. if not insert a user into database
                     ChecknInsertNewUser(sender_id)
                             
