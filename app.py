@@ -71,7 +71,7 @@ def webook():
 
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
-    return ('ok', 200)
+    response.end()
     if data['object'] == 'page':
 
         for entry in data['entry']:
