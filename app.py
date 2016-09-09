@@ -189,7 +189,7 @@ def unsubscribe2pokemon(sender_id,pokemon_id):  # create new user
             cursor.execute(add_user,(user_id,pokemon_id)) 
             message_text='You have been unsubscribed to this pokemon'
             send_message(sender_id,message_text)
-             print 'subscription deleted successfully'
+            print 'subscription deleted successfully'
             
             
         cursor.close()
