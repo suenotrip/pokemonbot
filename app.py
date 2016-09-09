@@ -194,7 +194,7 @@ def send_generic_template(recipient_id):
             "elements":[
               {
                 "title":"Welcome to rare Pokemon",
-                "image_url":"https://petersfancybrownhats.com/company_image.png",
+                "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
                 "subtitle":"We\'ve got the rare pokemons for you.",
                 "buttons":[
                   {
