@@ -15,6 +15,9 @@ from flask_apscheduler import APScheduler
 import requests
 from flask import Flask, request
 
+from datetime import date, datetime, timedelta
+import mysql.connector
+
 class Config(object):
     JOBS = [
         {
@@ -31,6 +34,16 @@ class Config(object):
 def job1(a, b):
     print str(a) + ' ' + str(b)
     log('scedule method called')
+    cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                          host='restokitch.com',
+                          database='restokit_pokemon')
+    cursor = cnx.cursor()
+    add_user = ("INSERT INTO bot_users "
+               "(name,facebook_id) "
+               "VALUES ('amit','123')")
+    cursor.execute(add_user)
+    cursor.close()
+    cnx.close()
     tweet()
 	
 app = Flask(__name__)
@@ -63,6 +76,17 @@ def webook():
 
     # endpoint for processing incoming messaging events
 
+    cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                              host='restokitch.com',
+                              database='restokit_pokemon')
+    cursor = cnx.cursor()
+    add_user = ("INSERT INTO bot_users "
+               "(name,facebook_id) "
+               "VALUES ('amit','123')")
+    cursor.execute(add_user)
+    cursor.close()
+    cnx.close()
+
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
 
@@ -76,6 +100,18 @@ def webook():
                     sender_id = messaging_event['sender']['id']  # the facebook ID of the person sending you the message
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event['message']['text']  # the message's text
+                    
+                    cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                              host='restokitch.com',
+                              database='restokit_pokemon')
+                    cursor = cnx.cursor()
+                    add_user = ("INSERT INTO bot_users "
+                               "(name,facebook_id) "
+                               "VALUES ('amit',sender_id)")
+                    cursor.execute(add_user)
+                    cursor.close()
+                    cnx.close()
+                   
 
                     send_message(sender_id, 'got it, thanks!')
 
