@@ -92,8 +92,8 @@ def webook():
                         cursor = cnx.cursor()
                         check_user = "SELECT * FROM bot_users WHERE facebook_id = %s"
                         cursor.execute(check_user,(sender_id,))
-                        results = cursor.fetchone()
-                        if results =='1':
+                        
+                        if cursor.fetchone()[0]:
                             print 'yep user exists'
                         else:
                             print 'nope not exists'
