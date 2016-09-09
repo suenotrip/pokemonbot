@@ -122,7 +122,7 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
         cursor.execute(getuser_fbid,(sender_id,))
         result_set = cursor.fetchall()
         for row in result_set:
-            print "%s" % (row["id"])
+            #print "%s" % (row["id"])
             user_id=row["id"]
 
         present_time = datetime.now()
