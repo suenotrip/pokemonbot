@@ -85,9 +85,9 @@ def webook():
                     
                     
                     send_message(sender_id, 'got it, thanks!')
-                    
-                    #insert a user into database
-                    insertNewUser(sender_id)
+                    send_generic_template(sender_id)
+                    #check if the user exists. if not insert a user into database
+                    ChecknInsertNewUser(sender_id)
                             
                 if messaging_event.get('delivery'):  # delivery confirmation
                     pass
@@ -96,11 +96,15 @@ def webook():
                     pass
 
                 if messaging_event.get('postback'):  # user clicked/tapped "postback" button in earlier message
-                    pass
+                    sender_id = messaging_event['sender']['id']
+                    payload=messaging_event['postback']['payload']
+                    log('sender id is ==='sender_id + 'payload for postback is ==='+payload)
+                    
+                    #handlePostback(message.postback.payload,senderId);
 
     return ('ok', 200)
 
-def insertNewUser(sender_id):  # create new user
+def ChecknInsertNewUser(sender_id):  # create new user
     try:
         cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
                   host='restokitch.com',
@@ -132,6 +136,43 @@ def insertNewUser(sender_id):  # create new user
         cnx.close()
         print("Something went wrong: {}".format(err))
 
+        
+def send_generic_template(recipient_id):
+
+    params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
+    headers = {'Content-Type': 'application/json'}
+    message={
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"generic",
+            "elements":[
+              {
+                "title":"Welcome to rare Pokemon",
+                "image_url":"https://petersfancybrownhats.com/company_image.png",
+                "subtitle":"We\'ve got the rare pokemons for you.",
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"Subscribe",
+                    "payload":"subscribe1"
+                  }              
+                ]
+              }
+            ]
+          }
+        }
+      }
+    data = json.dumps({'recipient': {'id': recipient_id},
+                      'message': message})
+
+    r = requests.post('https://graph.facebook.com/v2.6/me/messages',
+                      params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+        
+        
 def send_message(recipient_id, message_text):
 
     log('sending message to {recipient}: {text}'.format(recipient=recipient_id,
