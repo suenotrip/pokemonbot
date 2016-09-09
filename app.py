@@ -113,7 +113,8 @@ def rules4messages(sender_id,message_text) :
         
     else :
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
-        send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time too')
+        send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
+        subscriptionCount(sender_id)
         sendList2subscribe(sender_id)
 
 
@@ -212,6 +213,7 @@ def ChecknInsertNewUser(sender_id):  # create new user
                   host='restokitch.com',
                   database='restokit_pokemon')
         cursor = cnx.cursor()
+        
         check_user = "SELECT * FROM bot_users WHERE facebook_id = %s"
         cursor.execute(check_user,(sender_id,))
         msg = cursor.fetchone()
@@ -238,6 +240,35 @@ def ChecknInsertNewUser(sender_id):  # create new user
         cnx.close()
         print("Something went wrong: {}".format(err))
 
+def subscriptionCount(sender_id) :
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        getuser_fbid = "SELECT id FROM bot_users WHERE facebook_id = %s"
+        cursor.execute(getuser_fbid,(sender_id,))
+        result_set = cursor.fetchall()
+        for row in result_set:
+            #print "%s" % (row["id"])
+            user_id=row[0]
+        
+        count_pokemon = "SELECT count(*) FROM poke_subscribe WHERE user_id = %s "
+        cursor.execute(count_pokemon,(user_id,))
+        result_count = cursor.fetchall()
+        for row in result_count:
+            #print "%s" % (row["id"])
+            count=row[0]
+            
+        message_text='You are subscribed to' + count + ' pokemons'
+        send_message(sender_id,message_text)
+        
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
         
 def sendList2subscribe(recipient_id):
     message_text='You can subscribe to any of these pokemons.'
