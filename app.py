@@ -260,7 +260,7 @@ def subscriptionCount(sender_id) :
             #print "%s" % (row["id"])
             count=row[0]
             
-        message_text='You are subscribed to' + count + ' pokemons'
+        message_text='You are subscribed to' + str(count) + ' pokemons'
         send_message(sender_id,message_text)
         
         cursor.close()
