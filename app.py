@@ -125,11 +125,20 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
             #print "%s" % (row["id"])
             user_id=row[0]
 
-        present_time = datetime.now()
-        add_user = "INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)"
-        cursor.execute(add_user,(user_id,pokemon_id,present_time)) 
+        #check if this user is subscribed for this pokemon # if not, insert a new row
+        check_subscription = "SELECT * FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s"
+        cursor.execute(check_subscription,(user_id,pokemon_id))
+        msg = cursor.fetchone()
+        if not msg : 
+            print 'nope subscription does not exist'
+            present_time = datetime.now()
+            add_user = "INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)"
+            cursor.execute(add_user,(user_id,pokemon_id,present_time)) 
+            print('new suscription added')
+        else :
+            print 'subscription exists'
+            
         
-        print('new suscription added')
         cursor.close()
         cnx.close()
     except mysql.connector.Error as err:
