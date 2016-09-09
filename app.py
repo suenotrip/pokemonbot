@@ -76,16 +76,7 @@ def webook():
 
     # endpoint for processing incoming messaging events
 
-    cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
-                              host='restokitch.com',
-                              database='restokit_pokemon')
-    cursor = cnx.cursor()
-    add_user = ("INSERT INTO bot_users "
-               "(name,facebook_id) "
-               "VALUES ('amit','123')")
-    cursor.execute(add_user)
-    cursor.close()
-    cnx.close()
+    
 
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
