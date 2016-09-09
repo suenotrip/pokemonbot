@@ -98,7 +98,7 @@ def webook():
                 if messaging_event.get('postback'):  # user clicked/tapped "postback" button in earlier message
                     sender_id = messaging_event['sender']['id']
                     payload=messaging_event['postback']['payload']
-                    log('sender id is ==='+sender_id + 'payload for postback is ==='+payload)
+                    log('sender id is ==='+ sender_id + 'payload for postback is ==='+ payload)
                     
                     #handlePostback(message.postback.payload,senderId);
 
