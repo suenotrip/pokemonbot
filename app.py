@@ -137,6 +137,8 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
             print('new suscription added')
         else :
             print 'subscription exists'
+            message_text='You are already subscribed to this pokemon'
+            send_message(sender_id,message_text)
             
         
         cursor.close()
