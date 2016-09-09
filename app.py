@@ -83,6 +83,7 @@ def webook():
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
                     if 'text' in messaging_event['message']:
                         message_text = messaging_event['message']['text']  # the message's text
+                        rules4messages(sender_id,message_text)
                     
                     
                     send_message(sender_id, 'got it, thanks!')
@@ -105,11 +106,20 @@ def webook():
 
     return ('ok', 200)
 
+def rules4messages(sender_id,message_text)
+    if message_text=='unsubscribe':
+        sendList2Unsubscribe(sender_id)
+
+
+
 def handlePostback(payload,sender_id) :
 
     if payload=="subscribe1" :
         pokemon_id='1'
         subscribe2pokemon(sender_id,pokemon_id)
+    elif payload=="unsubscribe1"
+        pokemon_id='1'
+        unsubscribe2pokemon(sender_id,pokemon_id)
 
 
 def subscribe2pokemon(sender_id,pokemon_id):  # create new user
@@ -135,6 +145,8 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
             present_time = datetime.now()
             add_user = "INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)"
             cursor.execute(add_user,(user_id,pokemon_id,present_time)) 
+            message_text='You have been subscribed to this pokemon'
+            send_message(sender_id,message_text)
             print('new suscription added')
         else :
             print 'subscription exists'
@@ -142,6 +154,44 @@ def subscribe2pokemon(sender_id,pokemon_id):  # create new user
             send_message(sender_id,message_text)
             
         
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
+        
+
+def unsubscribe2pokemon(sender_id,pokemon_id):  # create new user
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        
+        getuser_fbid = "SELECT id FROM bot_users WHERE facebook_id = %s"
+        cursor.execute(getuser_fbid,(sender_id,))
+        result_set = cursor.fetchall()
+        for row in result_set:
+            #print "%s" % (row["id"])
+            user_id=row[0]
+
+        #check if this user is subscribed for this pokemon # if yes, delete the row
+        check_subscription = "SELECT * FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s"
+        cursor.execute(check_subscription,(user_id,pokemon_id))
+        msg = cursor.fetchone()
+        if not msg : 
+            print 'nope subscription does not exist'
+            message_text='Sorry but you were not subscribed to this pokemon'
+            send_message(sender_id,message_text)
+        else :
+            add_user = "DELETE FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s"
+            cursor.execute(add_user,(user_id,pokemon_id)) 
+            message_text='You have been unsubscribed to this pokemon'
+            send_message(sender_id,message_text)
+             print 'subscription deleted successfully'
+            
+            
         cursor.close()
         cnx.close()
     except mysql.connector.Error as err:
@@ -214,6 +264,57 @@ def sendList2subscribe(recipient_id):
                     "type":"postback",
                     "title":"Subscribe",
                     "payload":"subscribe2"
+                  }              
+                ]
+              }
+            ]
+          }
+        }
+      }
+    data = json.dumps({'recipient': {'id': recipient_id},
+                      'message': message})
+
+    r = requests.post('https://graph.facebook.com/v2.6/me/messages',
+                      params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+        
+        
+def sendList2Unsubscribe(recipient_id):
+
+    message_text='You are subscribed to these pokemons.'
+    send_message(recipient_id,message_text)
+    
+    params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
+    headers = {'Content-Type': 'application/json'}
+    message={
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"generic",
+            "elements":[
+              {
+                "title":"Welcome to rare Pokemons",
+                "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
+                "subtitle":"We\'ve got the rare pokemons for you.",
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"UnSubscribe",
+                    "payload":"unsubscribe1"
+                  }              
+                ]
+              },
+              {
+                "title":"Rare Pokemon 2",
+                "image_url":"https://heavyeditorial.files.wordpress.com/2016/07/3c76867a3b504d9aada2fbf4610a58f2-e1468936872361.jpg",
+                "subtitle":"I am the rarest.",
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"UnSubscribe",
+                    "payload":"unsubscribe2"
                   }              
                 ]
               }
