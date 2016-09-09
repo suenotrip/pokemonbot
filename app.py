@@ -82,7 +82,7 @@ def webook():
                     sender_id = messaging_event['sender']['id']  # the facebook ID of the person sending you the message
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
                     message_text = messaging_event['message']['text']  # the message's text
-                    myname='amit'
+                    
                     
                     send_message(sender_id, 'got it, thanks!')
                     
@@ -100,10 +100,12 @@ def webook():
                             r = requests.get('https://graph.facebook.com/v2.6/'+sender_id+'?access_token='+accesstoken)
                             data=r.json()
                             first_name=data['first_name']
-                            print (first_name)
+                            last_name=data['last_name']
+                            myname=first_name+last_name
+                            print (myname)
                             
                             add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
-                            cursor.execute(add_user,(first_name,sender_id))      
+                            cursor.execute(add_user,(myname,sender_id))      
                         else:
                             print 'yep user exists'
                         
