@@ -193,7 +193,7 @@ def send_generic_template(recipient_id):
             "template_type":"generic",
             "elements":[
               {
-                "title":"Welcome to rare Pokemon",
+                "title":"Welcome to rare Pokemons",
                 "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
                 "subtitle":"We\'ve got the rare pokemons for you.",
                 "buttons":[
@@ -201,6 +201,18 @@ def send_generic_template(recipient_id):
                     "type":"postback",
                     "title":"Subscribe",
                     "payload":"subscribe1"
+                  }              
+                ]
+              },
+              {
+                "title":"Rare Pokemon 2",
+                "image_url":"https://heavyeditorial.files.wordpress.com/2016/07/3c76867a3b504d9aada2fbf4610a58f2-e1468936872361.jpg",
+                "subtitle":"I am the rarest.",
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"Subscribe",
+                    "payload":"subscribe2"
                   }              
                 ]
               }
