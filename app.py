@@ -98,8 +98,8 @@ def webook():
                     cursor = cnx.cursor()
                     add_user = ("INSERT INTO bot_users "
                                "(name,facebook_id) "
-                               "VALUES ('amit',sender_id)")
-                    cursor.execute(add_user)
+                               "VALUES (%s, %s)")
+                    cursor.execute(add_user,'amit',sender_id)
                     cursor.close()
                     cnx.close()
                    
