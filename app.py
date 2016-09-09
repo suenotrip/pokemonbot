@@ -96,7 +96,7 @@ def webook():
                               host='restokitch.com',
                               database='restokit_pokemon')
                     cursor = cnx.cursor()
-                    add_user = "INSERT INTO bot_users (name, facebook_id) VALUES (%s, %s)" % (name, facebook_id)
+                    add_user = "INSERT INTO bot_users (name, facebook_id) VALUES (%s, %s)" % (name, sender_id)
                     cursor.execute(add_user)
                     cursor.close()
                     cnx.close()
