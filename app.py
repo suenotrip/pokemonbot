@@ -81,11 +81,11 @@ def webook():
 
                     sender_id = messaging_event['sender']['id']  # the facebook ID of the person sending you the message
                     recipient_id = messaging_event['recipient']['id']  # the recipient's ID, which should be your page's facebook ID
-                    #message_text = messaging_event['message']['text']  # the message's text
+                    message_text = messaging_event['message']['text']  # the message's text
                     
                     
                     send_message(sender_id, 'got it, thanks!')
-                    send_generic_template(sender_id)
+                    sendList2subscribe(sender_id)
                     #check if the user exists. if not insert a user into database
                     ChecknInsertNewUser(sender_id)
                             
@@ -182,7 +182,7 @@ def ChecknInsertNewUser(sender_id):  # create new user
         print("Something went wrong: {}".format(err))
 
         
-def send_generic_template(recipient_id):
+def sendList2subscribe(recipient_id):
 
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
