@@ -117,7 +117,7 @@ def handlePostback(payload,sender_id) :
     if payload=="subscribe1" :
         pokemon_id='1'
         subscribe2pokemon(sender_id,pokemon_id)
-    elif payload=="unsubscribe1"
+    elif payload=="unsubscribe1" :
         pokemon_id='1'
         unsubscribe2pokemon(sender_id,pokemon_id)
 
