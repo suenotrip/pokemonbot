@@ -92,13 +92,13 @@ def webook():
                         cursor = cnx.cursor()
                         check_user = "SELECT * FROM bot_users WHERE facebook_id = %s"
                         cursor.execute(check_user,(sender_id,))
-                        
-                        if cursor.fetchone()[0]:
-                            print 'yep user exists'
-                        else:
+                        row_count = cursor.rowcount
+                        if row_count == 0:
                             print 'nope not exists'
                             add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
-                            cursor.execute(add_user,(myname,sender_id))
+                            cursor.execute(add_user,(myname,sender_id))      
+                        else:
+                            print 'yep user exists'
                         
                         cursor.close()
                         cnx.close()
