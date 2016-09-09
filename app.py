@@ -108,8 +108,12 @@ def webook():
 def rules4messages(sender_id,message_text) :
     if message_text=='unsubscribe':
         sendList2Unsubscribe(sender_id)
+    if message_text=='subscribe':
+        sendList2subscribe(sender_id)
+        
     else :
-        send_message(sender_id, 'Welcome to pokemonbot!')
+        send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
+        send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time too')
         sendList2subscribe(sender_id)
 
 
@@ -236,7 +240,9 @@ def ChecknInsertNewUser(sender_id):  # create new user
 
         
 def sendList2subscribe(recipient_id):
-
+    message_text='You can subscribe to any of these pokemons.'
+    send_message(recipient_id,message_text)
+    
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
     message={
