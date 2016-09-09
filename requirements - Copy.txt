@@ -9,4 +9,3 @@ requests==2.10.0
 wsgiref==0.1.2
 Flask-APScheduler==1.4.0
 pygeocoder==1.2.5
-mysql_connector_repackaged==0.3.1
