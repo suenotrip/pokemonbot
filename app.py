@@ -86,36 +86,9 @@ def webook():
                     
                     send_message(sender_id, 'got it, thanks!')
                     
-                    try:
-                        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
-                                  host='restokitch.com',
-                                  database='restokit_pokemon')
-                        cursor = cnx.cursor()
-                        check_user = "SELECT * FROM bot_users WHERE facebook_id = %s"
-                        cursor.execute(check_user,(sender_id,))
-                        msg = cursor.fetchone()
-                        if not msg:
-                            print 'nope not exists'
-                            accesstoken=os.environ['PAGE_ACCESS_TOKEN']
-                            r = requests.get('https://graph.facebook.com/v2.6/'+sender_id+'?access_token='+accesstoken)
-                            data=r.json()
-                            first_name=data['first_name']
-                            last_name=data['last_name']
-                            myname=first_name+last_name
-                            print (myname)
+                    #insert a user into database
+                    insertNewUser(sender_id)
                             
-                            add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
-                            cursor.execute(add_user,(myname,sender_id))      
-                        else:
-                            print 'yep user exists'
-                        
-                        cursor.close()
-                        cnx.close()
-                    except mysql.connector.Error as err:
-                        print("Something went wrong: {}".format(err))
-                   
-                    
-
                 if messaging_event.get('delivery'):  # delivery confirmation
                     pass
 
@@ -127,6 +100,37 @@ def webook():
 
     return ('ok', 200)
 
+def insertNewUser(sender_id):  # create new user
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        check_user = "SELECT * FROM bot_users WHERE facebook_id = %s"
+        cursor.execute(check_user,(sender_id,))
+        msg = cursor.fetchone()
+        if not msg:
+            print 'nope user does not exist'
+            accesstoken=os.environ['PAGE_ACCESS_TOKEN']
+            r = requests.get('https://graph.facebook.com/v2.6/'+sender_id+'?access_token='+accesstoken)
+            data=r.json()
+            first_name=data['first_name']
+            last_name=data['last_name']
+            myname=first_name+' '+last_name
+            print (myname)
+
+            add_user = "INSERT INTO bot_users(name,facebook_id)VALUES (%s, %s)"
+            cursor.execute(add_user,(myname,sender_id))  
+                
+        else:
+            print 'Yeah. user already exists'
+        
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
 
 def send_message(recipient_id, message_text):
 
