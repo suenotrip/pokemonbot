@@ -406,9 +406,10 @@ def sendList2subscribe(recipient_id):
 def createFBelement(id,pokemon_id,pokemon_name,rarity) :
     payload_text='subscribe'+str(id)
     subtitle='I am '+rarity +' pokemon'
+    img_url='https://img.pokemondb.net/artwork/'+pokemon_name+'.jpg'
     return {
         "title":pokemon_name,
-                "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
+                "image_url":img_url,
                 "subtitle":subtitle,
                 "buttons":[
                   {
