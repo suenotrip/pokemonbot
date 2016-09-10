@@ -404,7 +404,7 @@ def sendList2subscribe(recipient_id):
     
         
 def createFBelement(id,pokemon_id,pokemon_name,rarity) :
-    payload_text='subscribe'+id
+    payload_text='subscribe'+str(id)
     subtitle='I am '+rarity +' pokemon'
     return {
         "title":pokemon_name,
