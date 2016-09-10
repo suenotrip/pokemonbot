@@ -125,7 +125,7 @@ def rules4messages(sender_id,message_text) :
     elif msg=='SUBS' :
         sendList2subscribe(sender_id) 
         
-    elif msg=='HELP'
+    elif msg=='HELP' :
         send_message(sender_id, 'Type MYSUBS to check your existing subscriptions')
         send_message(sender_id, 'Type SUBS to subscribe to more pokemons')
         send_message(sender_id, 'Type START to restart the bot for you')
