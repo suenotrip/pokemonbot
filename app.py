@@ -106,20 +106,33 @@ def webook():
     return ('ok', 200)
 
 def rules4messages(sender_id,message_text) :
-    if message_text=='unsubscribe':
+    msg=message_text.upper()
+    
+    if msg=='UNSUBSCRIBE':
         sendList2Unsubscribe(sender_id)
-    elif message_text=='subscribe':
+        
+    elif msg=='SUBSCRIBE':
         sendList2subscribe(sender_id)
-    elif message_text=='hi' :
+        
+    elif (msg=='HI') or (msg=='HELLO') or (msg=='HEY') or (msg=='START') or (msg=='HOME'):
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
         send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
         landingCarousel(sender_id)
-        #subscriptionCount(sender_id)
-        #sendList2subscribe(sender_id)
+        
+    elif msg=='MYSUBS' :
+        subscriptionCount(sender_id)
+        
+    elif msg=='SUBS' :
+        sendList2subscribe(sender_id) 
+        
+    elif msg=='HELP'
+        send_message(sender_id, 'Type MYSUBS to check your existing subscriptions')
+        send_message(sender_id, 'Type SUBS to subscribe to more pokemons')
+        send_message(sender_id, 'Type START to restart the bot for you')
+        
     else :
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
         send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
-        subscriptionCount(sender_id)
         sendList2subscribe(sender_id)
 
 
