@@ -134,7 +134,7 @@ def handlePostback(payload,sender_id) :
         unsubscribe2pokemon(sender_id,pokemon_id)
     elif payload=="getmysubscriptions" :
         subscriptionCount(sender_id)
-        sendList2Unsubscribe(sender_id)
+        
     elif payload =="getsubscribelist" :
         sendList2subscribe(sender_id)
 
@@ -321,6 +321,11 @@ def subscriptionCount(sender_id) :
             
         message_text='You are subscribed to ' + str(count) + ' pokemons'
         send_message(sender_id,message_text)
+        if count==0 :
+            message_text='Get started by subscribing to few pokemons'
+            send_message(sender_id,message_text)
+        else:
+            sendList2Unsubscribe(sender_id)
         
         cursor.close()
         cnx.close()
