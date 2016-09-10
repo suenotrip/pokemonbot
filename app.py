@@ -110,7 +110,7 @@ def rules4messages(sender_id,message_text) :
         sendList2Unsubscribe(sender_id)
     elif message_text=='subscribe':
         sendList2subscribe(sender_id)
-    elif message_text=='hi'
+    elif message_text=='hi' :
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
         send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
         sendList2subscribe(sender_id)
