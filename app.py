@@ -133,6 +133,7 @@ def handlePostback(payload,sender_id) :
         pokemon_id='1'
         unsubscribe2pokemon(sender_id,pokemon_id)
     elif payload=="getmysubscriptions" :
+        subscriptionCount(sender_id)
         sendList2Unsubscribe(sender_id)
     elif payload =="getsubscribelist" :
         sendList2subscribe(sender_id)
