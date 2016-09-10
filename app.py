@@ -354,50 +354,71 @@ def sendList2subscribe(recipient_id):
     
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
-    message={
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements":[
-              {
-                "title":"Welcome to rare Pokemons",
-                "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
-                "subtitle":"We\'ve got the rare pokemons for you.",
-                "buttons":[
-                  {
-                    "type":"postback",
-                    "title":"Subscribe",
-                    "payload":"subscribe1"
-                  }              
-                ]
-              },
-              {
-                "title":"Rare Pokemon 2",
-                "image_url":"https://heavyeditorial.files.wordpress.com/2016/07/3c76867a3b504d9aada2fbf4610a58f2-e1468936872361.jpg",
-                "subtitle":"I am the rarest.",
-                "buttons":[
-                  {
-                    "type":"postback",
-                    "title":"Subscribe",
-                    "payload":"subscribe2"
-                  }              
-                ]
+    #get list of pokemons from db
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        
+        
+        fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons "
+        cursor.execute(fetch_pokemon)
+        result_count = cursor.fetchall()
+        elements=[]
+        for row in result_count:
+            id=row[0]
+            pokemon_id=row[1]
+            pokemon_name=row[2]
+            rarity=row[3]
+            element=createFBelement(id,pokemon_id,pokemon_name,rarity)
+            elements.append(element)
+            
+        cursor.close()
+        cnx.close()
+        
+        message={
+            "attachment":{
+              "type":"template",
+              "payload":{
+                "template_type":"generic",
+                "elements":elements
               }
-            ]
-          }
+            }
         }
-      }
-    data = json.dumps({'recipient': {'id': recipient_id},
-                      'message': message})
+        data = json.dumps({'recipient': {'id': recipient_id},
+                          'message': message})
 
-    r = requests.post('https://graph.facebook.com/v2.6/me/messages',
-                      params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
+        r = requests.post('https://graph.facebook.com/v2.6/me/messages',
+                          params=params, headers=headers, data=data)
+        if r.status_code != 200:
+            log(r.status_code)
+            log(r.text)
+
         
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
+    
+    
         
+def createFBelement(id,pokemon_id,pokemon_name,rarity) :
+    payload_text='subscribe'+id
+    subtitle='I am '+rarity +' pokemon'
+    return {
+        "title":pokemon_name,
+                "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
+                "subtitle":subtitle,
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"Subscribe",
+                    "payload":payload_text
+                  }              
+                ]
+    }
+            
 def sendList2Unsubscribe(recipient_id):
 
     message_text='You are subscribed to these pokemons.'
