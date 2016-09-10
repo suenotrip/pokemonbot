@@ -404,6 +404,77 @@ def sendList2subscribe(recipient_id):
     
     
         
+
+            
+def sendList2Unsubscribe(recipient_id):
+
+    message_text='You are subscribed to these pokemons.'
+    send_message(recipient_id,message_text)
+    
+    params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
+    headers = {'Content-Type': 'application/json'}
+    #get list of my pokemons from db
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        #get user id from fb id
+        getuser_fbid = "SELECT id FROM bot_users WHERE facebook_id = %s"
+        cursor.execute(getuser_fbid,(sender_id,))
+        result_set = cursor.fetchall()
+        for row in result_set:
+            user_id=row[0]
+        #get pokemon_ids subscribed for this user
+        my_subscribed_pokemons="SELECT pokemon_id FROM poke_subscribe where user_id=%s"
+        cursor.execute(my_subscribed_pokemons,(user_id,))
+        result_my_pokemons = cursor.fetchall()
+        pokemon_ids=[]
+        for row in result_my_pokemons:
+            pokemon_id=row[0]
+            pokemon_ids.append(pokemon_id)
+            
+        #get pokemons details for subscribed ones
+        fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id in %s"
+        cursor.execute(fetch_pokemon,(pokemon_ids,))
+        result_count = cursor.fetchall()
+        elements=[]
+        for row in result_count:
+            id=row[0]
+            pokemon_id=row[1]
+            pokemon_name=row[2]
+            rarity=row[3]
+            element=createFBelement4Unsubscribe(id,pokemon_id,pokemon_name,rarity)
+            elements.append(element)
+            
+        cursor.close()
+        cnx.close()
+        
+        message={
+            "attachment":{
+              "type":"template",
+              "payload":{
+                "template_type":"generic",
+                "elements":elements
+              }
+            }
+        }
+        data = json.dumps({'recipient': {'id': recipient_id},
+                          'message': message})
+
+        r = requests.post('https://graph.facebook.com/v2.6/me/messages',
+                          params=params, headers=headers, data=data)
+        if r.status_code != 200:
+            log(r.status_code)
+            log(r.text)
+
+        
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
+        
+        
 def createFBelement(id,pokemon_id,pokemon_name,rarity) :
     payload_text='subscribepokemon'+str(id)
     subtitle='I am '+rarity +' pokemon'
@@ -420,58 +491,23 @@ def createFBelement(id,pokemon_id,pokemon_name,rarity) :
                   }              
                 ]
     }
-            
-def sendList2Unsubscribe(recipient_id):
-
-    message_text='You are subscribed to these pokemons.'
-    send_message(recipient_id,message_text)
     
-    params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
-    headers = {'Content-Type': 'application/json'}
-    message={
-        "attachment":{
-          "type":"template",
-          "payload":{
-            "template_type":"generic",
-            "elements":[
-              {
-                "title":"Welcome to rare Pokemons",
-                "image_url":"http://cdn.gamecloud.net.au/wp-content/uploads/2013/12/TDSO_Pokemon_Image_2.png",
-                "subtitle":"We\'ve got the rare pokemons for you.",
+def createFBelement4Unsubscribe(id,pokemon_id,pokemon_name,rarity) :
+    payload_text='unsubspokemon'+str(id)
+    subtitle='I am '+rarity +' pokemon'
+    img_url='https://img.pokemondb.net/artwork/'+pokemon_name.lower()+'.jpg'
+    return {
+        "title":pokemon_name,
+                "image_url":img_url,
+                "subtitle":subtitle,
                 "buttons":[
                   {
                     "type":"postback",
                     "title":"UnSubscribe",
-                    "payload":"unsubscribe1"
+                    "payload":payload_text
                   }              
                 ]
-              },
-              {
-                "title":"Rare Pokemon 2",
-                "image_url":"https://heavyeditorial.files.wordpress.com/2016/07/3c76867a3b504d9aada2fbf4610a58f2-e1468936872361.jpg",
-                "subtitle":"I am the rarest.",
-                "buttons":[
-                  {
-                    "type":"postback",
-                    "title":"UnSubscribe",
-                    "payload":"unsubscribe2"
-                  }              
-                ]
-              }
-            ]
-          }
-        }
-      }
-    data = json.dumps({'recipient': {'id': recipient_id},
-                      'message': message})
-
-    r = requests.post('https://graph.facebook.com/v2.6/me/messages',
-                      params=params, headers=headers, data=data)
-    if r.status_code != 200:
-        log(r.status_code)
-        log(r.text)
-        
-        
+    }    
 def send_message(recipient_id, message_text):
 
     log('sending message to {recipient}: {text}'.format(recipient=recipient_id,
