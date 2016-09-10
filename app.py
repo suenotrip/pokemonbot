@@ -432,13 +432,12 @@ def sendList2Unsubscribe(recipient_id):
         pokemon_ids=[]
         for row in result_my_pokemons:
             pokemon_id=row[0]
-            pokemon_ids.append(str(pokemon_id))
+            pokemon_ids.append(pokemon_id)
             print (pokemon_ids)
         #get pokemons details for subscribed ones
-        fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id in %s"
-        in_p=', '.join(map(lambda x: '%s', pokemon_ids))
-        fetch_pokemon = fetch_pokemon % in_p
-        cursor.execute(fetch_pokemon,(pokemon_ids,))
+        fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id in (%s)"
+        format_strings = ','.join(['%s'] * len(pokemon_ids))
+        cursor.execute(fetch_pokemon)% format_strings,tuple(pokemon_ids))
         result_count = cursor.fetchall()
         elements=[]
         for row in result_count:
