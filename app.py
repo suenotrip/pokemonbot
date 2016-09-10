@@ -143,8 +143,8 @@ def handlePostback(payload,sender_id) :
     if re.search("(subscribepokemon.*)", payload) :
         pokemon_id=int(payload[16:])
         subscribe2pokemon(sender_id,pokemon_id)
-    elif payload=="unsubscribe1" :
-        pokemon_id='1'
+    elif re.search("(unsubspokemon.*)", payload) :
+        pokemon_id=int(payload[13:])
         unsubscribe2pokemon(sender_id,pokemon_id)
     elif payload=="getmysubscriptions" :
         subscriptionCount(sender_id)
