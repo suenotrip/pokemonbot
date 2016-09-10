@@ -140,7 +140,7 @@ def rules4messages(sender_id,message_text) :
 
 def handlePostback(payload,sender_id) :
 
-    if re.search(r'\bsubscribepokemon\b', payload):
+    if re.search("(subscribepokemon.*)", payload) :
         pokemon_id=int(payload[16:])
         subscribe2pokemon(sender_id,pokemon_id)
     elif payload=="unsubscribe1" :
