@@ -421,7 +421,7 @@ def sendList2Unsubscribe(recipient_id):
         cursor = cnx.cursor()
         #get user id from fb id
         getuser_fbid = "SELECT id FROM bot_users WHERE facebook_id = %s"
-        cursor.execute(getuser_fbid,(sender_id,))
+        cursor.execute(getuser_fbid,(recipient_id,))
         result_set = cursor.fetchall()
         for row in result_set:
             user_id=row[0]
