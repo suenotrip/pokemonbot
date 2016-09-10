@@ -113,8 +113,9 @@ def rules4messages(sender_id,message_text) :
     elif message_text=='hi' :
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
         send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
-        subscriptionCount(sender_id)
-        sendList2subscribe(sender_id)
+        landingCarousel(sender_id)
+        #subscriptionCount(sender_id)
+        #sendList2subscribe(sender_id)
     else :
         send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
         send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
@@ -131,6 +132,10 @@ def handlePostback(payload,sender_id) :
     elif payload=="unsubscribe1" :
         pokemon_id='1'
         unsubscribe2pokemon(sender_id,pokemon_id)
+    elif payload=="getmysubscriptions" :
+        sendList2Unsubscribe(sender_id)
+    elif payload =="getsubscribelist" :
+        sendList2subscribe(sender_id)
 
 
 def subscribe2pokemon(sender_id,pokemon_id):  # create new user
@@ -244,6 +249,55 @@ def ChecknInsertNewUser(sender_id):  # create new user
         cnx.close()
         print("Something went wrong: {}".format(err))
 
+        
+def landingCarousel(recipient_id) :
+    params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
+    headers = {'Content-Type': 'application/json'}
+    message={
+        "attachment":{
+          "type":"template",
+          "payload":{
+            "template_type":"generic",
+            "elements":[
+              {
+                "title":"My Pokemon Subscriptions",
+                "image_url":"http://cdn.bulbagarden.net/upload/thumb/9/97/Mpr_platinumscreen.jpg/350px-Mpr_platinumscreen.jpg",
+                "subtitle":"Check your existing subscriptions. You may unsubscribe from any of them.",
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"My Subscriptions",
+                    "payload":"getmysubscriptions"
+                  }              
+                ]
+              },
+              {
+                "title":"Subscribe to rare pokemons",
+                "image_url":"https://i.ytimg.com/vi/sSjee6FmJrM/maxresdefault.jpg",
+                "subtitle":"Subscribe to more pokemons and get notifications of their location.",
+                "buttons":[
+                  {
+                    "type":"postback",
+                    "title":"Subscribe more",
+                    "payload":"getsubscribelist"
+                  }              
+                ]
+              }
+            ]
+          }
+        }
+      }
+    data = json.dumps({'recipient': {'id': recipient_id},
+                      'message': message})
+
+    r = requests.post('https://graph.facebook.com/v2.6/me/messages',
+                      params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+
+
+
 def subscriptionCount(sender_id) :
     try:
         cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
@@ -264,7 +318,7 @@ def subscriptionCount(sender_id) :
             #print "%s" % (row["id"])
             count=row[0]
             
-        message_text='You are subscribed to' + str(count) + ' pokemons'
+        message_text='You are subscribed to ' + str(count) + ' pokemons'
         send_message(sender_id,message_text)
         
         cursor.close()
