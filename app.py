@@ -139,8 +139,8 @@ def rules4messages(sender_id,message_text) :
 
 def handlePostback(payload,sender_id) :
 
-    if payload=="subscribe1" :
-        pokemon_id='1'
+    if re.search("subscribepokemon", payload):
+        pokemon_id=int(payload[16:])
         subscribe2pokemon(sender_id,pokemon_id)
     elif payload=="unsubscribe1" :
         pokemon_id='1'
@@ -404,7 +404,7 @@ def sendList2subscribe(recipient_id):
     
         
 def createFBelement(id,pokemon_id,pokemon_name,rarity) :
-    payload_text='subscribe'+str(id)
+    payload_text='subscribepokemon'+str(id)
     subtitle='I am '+rarity +' pokemon'
     img_url='https://img.pokemondb.net/artwork/'+pokemon_name.lower()+'.jpg'
     return {
