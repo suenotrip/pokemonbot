@@ -324,6 +324,7 @@ def subscriptionCount(sender_id) :
         if count==0 :
             message_text='Get started by subscribing to few pokemons'
             send_message(sender_id,message_text)
+            sendList2subscribe(sender_id)
         else:
             sendList2Unsubscribe(sender_id)
         
