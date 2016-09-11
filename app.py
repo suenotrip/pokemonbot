@@ -112,36 +112,37 @@ def webook():
 
 def rules4messages(sender_id,message_text) :
     msg=message_text.upper()
-    
-    if msg=='UNSUBSCRIBE':
-        sendList2Unsubscribe(sender_id)
-        
-    elif msg=='SUBSCRIBE':
-        sendList2subscribe(sender_id)
-        
-    elif (msg=='HI') or (msg=='HELLO') or (msg=='HEY') or (msg=='START') or (msg=='HOME'):
-        if sender_id=='1661666914149514' :
+    if sender_id=='1661666914149514' :
             log('trying to send message to the page itself.')
-        else :
+    else :
+    
+        if msg=='UNSUBSCRIBE':
+            sendList2Unsubscribe(sender_id)
+            
+        elif msg=='SUBSCRIBE':
+            sendList2subscribe(sender_id)
+            
+        elif (msg=='HI') or (msg=='HELLO') or (msg=='HEY') or (msg=='START') or (msg=='HOME'):
+            
             send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
             send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
             landingCarousel(sender_id)
-        
-    elif msg=='MYSUBS' :
-        subscriptionCount(sender_id)
-        
-    elif msg=='SUBS' :
-        sendList2subscribe(sender_id) 
-        
-    elif msg=='HELP' :
-        send_message(sender_id, 'Type MYSUBS to check your existing subscriptions')
-        send_message(sender_id, 'Type SUBS to subscribe to more pokemons')
-        send_message(sender_id, 'Type START to restart the bot for you')
-        
-    else :
-        send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
-        send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
-        sendList2subscribe(sender_id)
+            
+        elif msg=='MYSUBS' :
+            subscriptionCount(sender_id)
+            
+        elif msg=='SUBS' :
+            sendList2subscribe(sender_id) 
+            
+        elif msg=='HELP' :
+            send_message(sender_id, 'Type MYSUBS to check your existing subscriptions')
+            send_message(sender_id, 'Type SUBS to subscribe to more pokemons')
+            send_message(sender_id, 'Type START to restart the bot for you')
+            
+        else :
+            send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
+            send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
+            sendList2subscribe(sender_id)
 
 
 
@@ -637,8 +638,8 @@ def tweet():
 			# tweet.statuses.update(status=tweeting)
 
 					print 'i am ready to tweet'
-					send_message('1162610060480372', tweeting)
-					send_message('1077717795652613', tweeting)
+					#send_message('1162610060480372', tweeting)
+					#send_message('1077717795652613', tweeting)
 				except Exception, e:
 					print 'Duplicate status, continuing on.'
 					pass
