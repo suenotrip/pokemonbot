@@ -3,7 +3,8 @@
 import os
 import sys
 import json
-
+reload(sys)
+sys.setdefaultencoding("utf-8")
 from pygeocoder import Geocoder
 import urllib
 import time as t
@@ -256,8 +257,8 @@ def ChecknInsertNewUser(sender_id):  # create new user
             data=r.json()
             #first_name=data['first_name'].encode('utf8')
             #last_name=data['last_name'].encode('utf8')
-            first_name=('Felipé Rach').decode('utf8')
-            last_name=('Azria').decode('utf8')
+            first_name='Felipé Rach'
+            last_name='Azria'
             myname=first_name+' '+last_name
             print (myname)
 
