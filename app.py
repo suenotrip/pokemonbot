@@ -256,8 +256,8 @@ def ChecknInsertNewUser(sender_id):  # create new user
             data=r.json()
             #first_name=data['first_name'].encode('utf8')
             #last_name=data['last_name'].encode('utf8')
-            first_name=('Felipé Rach') .encode('utf8')
-            last_name=('Azria').encode('utf8')
+            first_name=('Felipé Rach').decode().encode('utf8')
+            last_name=('Azria').decode().encode('utf8')
             myname=first_name+' '+last_name
             print (myname)
 
