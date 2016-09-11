@@ -255,10 +255,10 @@ def ChecknInsertNewUser(sender_id):  # create new user
             accesstoken=os.environ['PAGE_ACCESS_TOKEN']
             r = requests.get('https://graph.facebook.com/v2.6/'+sender_id+'?access_token='+accesstoken)
             data=r.json()
-            #first_name=data['first_name'].encode('utf8')
-            #last_name=data['last_name'].encode('utf8')
-            first_name='Felipé Rach'
-            last_name='Azria'
+            first_name=data['first_name']
+            last_name=data['last_name']
+            #first_name='Felipé Rach'
+            #last_name='Azria'
             myname=first_name+' '+last_name
             print (myname)
 
