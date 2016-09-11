@@ -106,6 +106,7 @@ def webook():
                     
     elif data['object']=='stripe' :
         facebook_id=data['user_id']
+        log('sender from stripe is =='+facebook_id)
         
 
     return ('ok', 200)
