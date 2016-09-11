@@ -103,6 +103,8 @@ def webook():
                     log('sender id is ==='+ sender_id + 'payload for postback is ==='+ payload)
                     
                     handlePostback(payload,sender_id)
+    elif data['object']=='stripe' :
+        facebook_id=data['user_id']
         
 
     return ('ok', 200)
