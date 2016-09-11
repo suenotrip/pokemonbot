@@ -120,9 +120,12 @@ def rules4messages(sender_id,message_text) :
         sendList2subscribe(sender_id)
         
     elif (msg=='HI') or (msg=='HELLO') or (msg=='HEY') or (msg=='START') or (msg=='HOME'):
-        send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
-        send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
-        landingCarousel(sender_id)
+        if sender_id=='1661666914149514' :
+            log('trying to send message to the page itself.')
+        else :
+            send_message(sender_id, 'Welcome to pokemonbot! Catching pokemons has just become easier!')
+            send_message(sender_id, 'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.')
+            landingCarousel(sender_id)
         
     elif msg=='MYSUBS' :
         subscriptionCount(sender_id)
