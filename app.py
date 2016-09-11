@@ -72,7 +72,7 @@ def webook():
 
     data = request.get_json()
     log(data)  # you may not want to log every incoming message in production, but it's good for testing
-    #response.end()
+    #if post is from facebook page
     if data['object'] == 'page':
 
         for entry in data['entry']:
@@ -103,6 +103,10 @@ def webook():
                     log('sender id is ==='+ sender_id + 'payload for postback is ==='+ payload)
                     
                     handlePostback(payload,sender_id)
+                    
+    elif data['object']=='stripe' :
+        facebook_id=data['user_id']
+        
 
     return ('ok', 200)
 
