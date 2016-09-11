@@ -301,6 +301,18 @@ def landingCarousel(recipient_id) :
                     "payload":"getsubscribelist"
                   }              
                 ]
+              },
+              {
+                "title":"Pay to subscribe",
+                "image_url":"https://ruter.no/contentassets/711a33afa4144b97b2f7d9772a49418a/reisekort_767x250.jpg",
+                "subtitle":"Pay to subscribe to more pokemons",
+                "buttons":[
+                  {
+                    type: "web_url",
+                    url: "http://stripe.restokitch.com/stripe.php?user_id="+recipient_id,
+                    title: "Pay 5 USD"
+                  }              
+                ]
               }
             ]
           }
