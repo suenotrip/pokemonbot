@@ -272,6 +272,7 @@ def ChecknInsertNewUser(sender_id):  # create new user
 def landingCarousel(recipient_id) :
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
+    url='http://stripe.restokitch.com/stripe.php?user_id='+recipient_id
     message={
         "attachment":{
           "type":"template",
@@ -308,9 +309,9 @@ def landingCarousel(recipient_id) :
                 "subtitle":"Pay to subscribe to more pokemons",
                 "buttons":[
                   {
-                    type: "web_url",
-                    url: "http://stripe.restokitch.com/stripe.php?user_id="+recipient_id,
-                    title: "Pay 5 USD"
+                    "type": "web_url",
+                    "url": url,
+                    "title": "Pay 5 USD"
                   }              
                 ]
               }
