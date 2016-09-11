@@ -105,7 +105,8 @@ def webook():
                     handlePostback(payload,sender_id)
     elif data['object']=='stripe' :
         facebook_id=data['user_id']
-        
+        send_message(facebook_id,'Congratulations!')
+        send_message(facebook_id,'Great, Your payment has been processed successfully! Now you can add more pokemons.')
 
     return ('ok', 200)
 
