@@ -671,10 +671,8 @@ def tweet():
 					gmap,
 					)
 				try:
-
-			# tweet.statuses.update(status=tweeting)
-                    sendNotificationToSubscribedUsers(e_new['pokemon_id'],tweeting)
 					print 'i am ready to tweet'
+                    sendNotificationToSubscribedUsers(e_new['pokemon_id'],tweeting)
 					#send_message('1162610060480372', tweeting)
 					#send_message('1077717795652613', tweeting)
 				except Exception, e:
