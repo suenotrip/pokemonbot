@@ -467,7 +467,7 @@ def sendList2Unsubscribe(recipient_id):
             fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id in ("+ str(myTuple) +")"
         else :   
             fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id in"+str(myTuple)
-        log ('sql_pokemon'+fetch_pokemon)
+        #log ('sql_pokemon'+fetch_pokemon)
         cursor.execute(fetch_pokemon)
         result_count = cursor.fetchall()
         elements=[]
@@ -562,6 +562,34 @@ def log(message):  # simple wrapper for logging to stdout on heroku
     sys.stdout.flush()
 
 
+    
+def sendNotificationToSubscribedUsers(pokemon_id,message) :
+    #check who all are subscribed to this pokemon
+    log ('pokemon id for this notification===== '+pokemon_id)
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon', password='pokemon123',
+                  host='restokitch.com',
+                  database='restokit_pokemon')
+        cursor = cnx.cursor()
+        
+        getusers_subscribed = "SELECT b.facebook_id FROM poke_subscribe p join bot_users b  on p.user_id= b.id WHERE p.pokemon_id = %s"
+        cursor.execute(getusers_subscribed,(pokemon_id,))
+        result_set = cursor.fetchall()
+        fb_ids=[]
+        for row in result_set:
+            fb_id=row[0]
+            send_message(fb_id,message)
+            fb_ids.append(fb_id)
+        
+        print (fb_ids)
+        
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error as err:
+        cursor.close()
+        cnx.close()
+        print("Something went wrong: {}".format(err))
+    
 def tweet():
     #args = get_args()
     #creds = load_credentials()
@@ -582,7 +610,7 @@ def tweet():
 			  './pokemon.fr.json')) as data_file:
 		idToPokemon = json.load(data_file)
 		
-	url = 'http://09946dde.ngrok.io' + '/rare'
+	url = 'http://5f84e015.ngrok.io' + '/rare'
 	response = urllib.urlopen(url)
 	dump = json.loads(response.read())
 	new = copy.deepcopy(dump)
@@ -645,7 +673,7 @@ def tweet():
 				try:
 
 			# tweet.statuses.update(status=tweeting)
-
+                    sendNotificationToSubscribedUsers(e_new['pokemon_id'],tweeting)
 					print 'i am ready to tweet'
 					#send_message('1162610060480372', tweeting)
 					#send_message('1077717795652613', tweeting)
