@@ -461,6 +461,9 @@ def sendList2Unsubscribe(recipient_id):
             print (pokemon_ids)
         #get pokemons details for subscribed ones
         myTuple= tuple(pokemon_ids)
+        pokemon_count=len(pokemon_ids)
+        if pokemon_count==1 :
+            myTuple=myTuple[0]
         fetch_pokemon = "SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id in"+str(myTuple)
         log ('sql_pokemon'+fetch_pokemon)
         cursor.execute(fetch_pokemon)
