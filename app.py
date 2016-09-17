@@ -451,6 +451,7 @@ def sendList2Unsubscribe(recipient_id):
             user_id=row[0]
         #get pokemon_ids subscribed for this user
         my_subscribed_pokemons="SELECT pokemon_id FROM poke_subscribe where user_id=%s"
+        log('sql_query'+ my_subscribed_pokemons)
         cursor.execute(my_subscribed_pokemons,(user_id,))
         result_my_pokemons = cursor.fetchall()
         pokemon_ids=[]
