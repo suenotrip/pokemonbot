@@ -413,7 +413,7 @@ def sendList2subscribe(recipient_id):
         cursor = cnx.cursor()
 
         fetch_pokemon = \
-            'SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons '
+            'SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id<9 '
         cursor.execute(fetch_pokemon)
         result_count = cursor.fetchall()
         elements = []
@@ -425,7 +425,8 @@ def sendList2subscribe(recipient_id):
             element = createFBelement(id, pokemon_id, pokemon_name,
                     rarity)
             elements.append(element)
-
+        element = createMoreElement(1000)
+        elements.append(element)
         cursor.close()
         cnx.close()
 
@@ -534,7 +535,18 @@ def sendList2Unsubscribe(recipient_id):
         cnx.close()
         print 'Something went wrong: {}'.format(err)
 
-
+def createMoreElement(id):
+    payload_text = 'subscribepokemon' + str(id)
+    subtitle = 'Click the button below to see more pokemons'
+    img_url = 'http://www.siriusxm.ca/wp-content/uploads/2014/08/EN-More.png'
+    return {
+        'title': More pokemons,
+        'image_url': img_url,
+        'subtitle': subtitle,
+        'buttons': [{'type': 'postback', 'title': 'Subscribe',
+                    'payload': payload_text}],
+        }
+        
 def createFBelement(
     id,
     pokemon_id,
