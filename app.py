@@ -132,7 +132,7 @@ def rules4messages(sender_id, message_text):
             sendList2Unsubscribe(sender_id)
         elif msg == 'SUBSCRIBE':
 
-            sendList2subscribe(sender_id)
+            sendList2subscribe(sender_id,1)
         elif msg == 'HI' or msg == 'HELLO' or msg == 'HEY' or msg \
             == 'START' or msg == 'HOME':
 
@@ -148,7 +148,7 @@ def rules4messages(sender_id, message_text):
             subscriptionCount(sender_id)
         elif msg == 'SUBS':
 
-            sendList2subscribe(sender_id)
+            sendList2subscribe(sender_id,1)
         elif msg == 'HELP':
 
             send_message(sender_id,
@@ -166,13 +166,17 @@ def rules4messages(sender_id, message_text):
             send_message(sender_id,
                          'Subscribe to rare pokemons and get notification with the location of the pokemons when it is available in Paris with disappearance time as well.'
                          )
-            sendList2subscribe(sender_id)
+            sendList2subscribe(sender_id,1)
 
 
 def handlePostback(payload, sender_id):
 
     if re.search('(subscribepokemon.*)', payload):
         pokemon_id = int(payload[16:])
+        if pokemon_id==1000 :
+            sendList2subscribe(sender_id,2)
+        if pokemon_id==2000 :
+            sendList2subscribe(sender_id,3)
         subscribe2pokemon(sender_id, pokemon_id)
     elif re.search('(unsubspokemon.*)', payload):
         pokemon_id = int(payload[13:])
@@ -181,7 +185,7 @@ def handlePostback(payload, sender_id):
         subscriptionCount(sender_id)
     elif payload == 'getsubscribelist':
 
-        sendList2subscribe(sender_id)
+        sendList2subscribe(sender_id,1)
 
 
 def subscribe2pokemon(sender_id, pokemon_id):  # create new user
@@ -385,7 +389,7 @@ def subscriptionCount(sender_id):
         if count == 0:
             message_text = 'Get started by subscribing to few pokemons'
             send_message(sender_id, message_text)
-            sendList2subscribe(sender_id)
+            sendList2subscribe(sender_id,1)
         else:
             sendList2Unsubscribe(sender_id)
 
@@ -397,7 +401,7 @@ def subscriptionCount(sender_id):
         print 'Something went wrong: {}'.format(err)
 
 
-def sendList2subscribe(recipient_id):
+def sendList2subscribe(recipient_id,sequence_id):
     message_text = 'You can subscribe to any of these pokemons.'
     send_message(recipient_id, message_text)
 
@@ -412,8 +416,13 @@ def sendList2subscribe(recipient_id):
                 database='restokit_pokemon')
         cursor = cnx.cursor()
 
-        fetch_pokemon = \
-            'SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id<9 '
+        if sequence_id==2 :
+            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>9 & id<19 '
+        elif sequence_id==3 :
+            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>18 & id<28 '
+        else :
+            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id<9 '
+            
         cursor.execute(fetch_pokemon)
         result_count = cursor.fetchall()
         elements = []
@@ -425,8 +434,13 @@ def sendList2subscribe(recipient_id):
             element = createFBelement(id, pokemon_id, pokemon_name,
                     rarity)
             elements.append(element)
-        element = createMoreElement(1000)
-        elements.append(element)
+        if sequence_id==1 :
+            element = createMoreElement(1000)
+            elements.append(element)
+        elif sequence_id ==2 :
+            element = createMoreElement(1000)
+            elements.append(element)
+        
         cursor.close()
         cnx.close()
 
@@ -537,13 +551,13 @@ def sendList2Unsubscribe(recipient_id):
 
 def createMoreElement(id):
     payload_text = 'subscribepokemon' + str(id)
-    subtitle = 'Click the button below to see more pokemons'
+    subtitle = 'Click the button below to check more pokemons & subscribe'
     img_url = 'http://www.siriusxm.ca/wp-content/uploads/2014/08/EN-More.png'
     return {
         'title': 'More pokemons',
         'image_url': img_url,
         'subtitle': subtitle,
-        'buttons': [{'type': 'postback', 'title': 'Subscribe',
+        'buttons': [{'type': 'postback', 'title': 'More Pokemons',
                     'payload': payload_text}],
         }
         
