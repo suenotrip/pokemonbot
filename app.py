@@ -705,8 +705,8 @@ def tweet():
                 id_pokemon=e_new['pokemon_id']
                 pokemon_name=idToPokemon[str(e_new['pokemon_id'])]
                 #log('pokemon generated is == '+ pokemon_name)
-                
-                message=pokemon_name +' found at '+ location +' till '+str(time.hour)+':'+str(time.minute)+':'+str(time.second)
+                hour=time.hour+6
+                message=pokemon_name +' found at '+ location +' till '+str(hour)+':'+str(time.minute)+':'+str(time.second)
                 # message = \
                      # "{} \xc3\xa0 {} jusqu'\xc3\xa0 {}:{}:{}. #PokemonGo {}".format(
                      # pokemon_name,
