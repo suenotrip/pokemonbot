@@ -597,7 +597,7 @@ def log(message):  # simple wrapper for logging to stdout on heroku
 def sendNotificationToSubscribedUsers(pokemon_id, message):
 
     # check who all are subscribed to this pokemon
-
+    log('notification method called')
     log('pokemon id for this notification===== ' + pokemon_id)
     try:
         cnx = mysql.connector.connect(user='restokit_pokemon',
@@ -612,7 +612,7 @@ def sendNotificationToSubscribedUsers(pokemon_id, message):
         fb_ids = []
         for row in result_set:
             fb_id = row[0]
-            send_message(fb_id, message)
+            #send_message(fb_id, message)
             fb_ids.append(fb_id)
 
         print fb_ids
@@ -681,34 +681,43 @@ def tweet():
                 + str(e_new['disappear_time'] / 1000)
 
             if t.time() + 300 < e_new['disappear_time'] / 1000:
+                print 'test13'
                 location = str(Geocoder.reverse_geocode(e_new['latitude'
                                ], e_new['longitude'])[0]).split(',')
-                destination = location[0] + ', ' \
-                    + location[1].split()[0]
-                time = \
-                    datetime.datetime.fromtimestamp(e_new['disappear_time'
-                        ] / 1000)
-                hour = time.hour + 6
+                               
+                log('location is '+location)
+                
+                    
+                #log ('location'+location)
+                #latitude=str(e_new['latitude'])
+                #longitude=str(e_new['longitude'])
                 gmap = 'https://www.google.fr/maps/place/' \
                     + str(e_new['latitude']) + ',' \
                     + str(e_new['longitude']) + '/'
-                if hour >= 24:
-                    hour -= 24
-                tweeting = \
-                    "{} \xc3\xa0 {} jusqu'\xc3\xa0 {}:{}:{}. #PokemonGo {}".format(
-                    idToPokemon[str(e_new['pokemon_id'])].encode('utf-8'
-                            ),
-                    destination,
-                    hour,
-                    str(time.minute).zfill(2),
-                    str(time.second).zfill(2),
-                    gmap,
-                    )
+                #log('latitude is '+latitude)
+                #log('longitude is '+longitude)
+                #log ('gmap is '+gmap)
+                id_pokemon=e_new['pokemon_id']
+                pokemon_name=idToPokemon[str(e_new['pokemon_id'])]
+                #log('pokemon generated is == '+ pokemon_name)
+                
+                    
+                # message = \
+                    # "{} \xc3\xa0 {} jusqu'\xc3\xa0 {}:{}:{}. #PokemonGo {}".format(
+                    # pokemon_name,
+                    # destination,
+                    # hour,
+                    # str(time.minute).zfill(2),
+                    # str(time.second).zfill(2),
+                    # gmap,
+                    # )
+                    
+                #log ('message is == '+message)
                 try:
 
                     print 'i am ready to tweet'
-                    sendNotificationToSubscribedUsers(e_new['pokemon_id'
-                            ], tweeting)
+                    #sendNotificationToSubscribedUsers(e_new['pokemon_id'
+                    #        ], tweeting)
                 except Exception, e:
 
                     # send_message('1162610060480372', tweeting)
@@ -716,7 +725,7 @@ def tweet():
 
                     print 'Duplicate status, continuing on.'
                     pass
-                print tweeting
+                #print tweeting
 
           # Google api timeout
 
