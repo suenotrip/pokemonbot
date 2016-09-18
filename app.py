@@ -706,7 +706,9 @@ def tweet():
                 pokemon_name=idToPokemon[str(e_new['pokemon_id'])]
                 #log('pokemon generated is == '+ pokemon_name)
                 hour=time.hour+6
-                message=pokemon_name +' found at '+ location +' till '+str(hour)+':'+str(time.minute)+':'+str(time.second)
+                if hour >= 24:
+                    hour -= 24
+                message=pokemon_name +' found at '+ location +' till '+str(hour)+':'+str(time.minute).zfill(2)+':'+str(time.second).zfill(2)
                 # message = \
                      # "{} \xc3\xa0 {} jusqu'\xc3\xa0 {}:{}:{}. #PokemonGo {}".format(
                      # pokemon_name,
@@ -721,17 +723,18 @@ def tweet():
                 try:
 
                     print 'i am ready to tweet'
-                    # with open(os.path.join(os.path.dirname(__file__),'./lastpokemon.json')) as data_file:
-                        # last_encounter = json.load(data_file)
-                    # last_encounter_id=last_encounter['pokemon'][0]['encounter_id']
-                    # log('last encounter id is == '+last_encounter_id)
-                    # if last_encounter_id==e_new['encounter_id'] :
-                        # log('same encounter id. no action taken.')
-                    #else :
-                    sendNotificationToSubscribedUsers(id_pokemon, message)
-                    # last_encounter_json={"pokemon": [{"encounter_id":e_new['encounter_id']}]}
-                    # with open(os.path.join(os.path.dirname(__file__), './lastpokemon.json'),'w') as outfile:
-                        # json.load(last_encounter_json,outfile)
+                    with open(os.path.join(os.path.dirname(__file__),'./lastpokemon.json')) as data_file:
+                         last_encounter = json.load(data_file)
+                    last_encounter_id=last_encounter['pokemon'][0]['encounter_id']
+                    log('last encounter id is == '+str(last_encounter_id))
+                    if last_encounter_id==e_new['encounter_id'] :
+                        log('same encounter id. no action taken.')
+                    else :
+                        sendNotificationToSubscribedUsers(id_pokemon, message)
+                        new_encounter_id=e_new['encounter_id']
+                        last_encounter_json={"pokemon": [{"encounter_id":new_encounter_id}]}
+                        with open(os.path.join(os.path.dirname(__file__), './lastpokemon.json'),'w') as outfile:
+                            json.dump(last_encounter_json,outfile)
                         
                 except Exception, e:
                     print e.value
