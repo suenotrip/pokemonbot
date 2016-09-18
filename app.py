@@ -175,7 +175,7 @@ def handlePostback(payload, sender_id):
         pokemon_id = int(payload[16:])
         if pokemon_id==1000 :
             sendList2subscribe(sender_id,2)
-        if pokemon_id==2000 :
+        elif pokemon_id==2000 :
             sendList2subscribe(sender_id,3)
         else :
             subscribe2pokemon(sender_id, pokemon_id)
