@@ -177,7 +177,8 @@ def handlePostback(payload, sender_id):
             sendList2subscribe(sender_id,2)
         if pokemon_id==2000 :
             sendList2subscribe(sender_id,3)
-        subscribe2pokemon(sender_id, pokemon_id)
+        else :
+            subscribe2pokemon(sender_id, pokemon_id)
     elif re.search('(unsubspokemon.*)', payload):
         pokemon_id = int(payload[13:])
         unsubscribe2pokemon(sender_id, pokemon_id)
@@ -438,7 +439,7 @@ def sendList2subscribe(recipient_id,sequence_id):
             element = createMoreElement(1000)
             elements.append(element)
         elif sequence_id ==2 :
-            element = createMoreElement(1000)
+            element = createMoreElement(2000)
             elements.append(element)
         
         cursor.close()
