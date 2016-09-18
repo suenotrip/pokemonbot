@@ -540,7 +540,7 @@ def createMoreElement(id):
     subtitle = 'Click the button below to see more pokemons'
     img_url = 'http://www.siriusxm.ca/wp-content/uploads/2014/08/EN-More.png'
     return {
-        'title': More pokemons,
+        'title': 'More pokemons',
         'image_url': img_url,
         'subtitle': subtitle,
         'buttons': [{'type': 'postback', 'title': 'Subscribe',
