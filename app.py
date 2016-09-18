@@ -418,9 +418,9 @@ def sendList2subscribe(recipient_id,sequence_id):
         cursor = cnx.cursor()
 
         if sequence_id==2 :
-            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>9 & id<19 '
+            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>9 and id<19 '
         elif sequence_id==3 :
-            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>18 & id<28 '
+            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>18 and id<28 '
         else :
             fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id<9 '
             
