@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+#http://pokemondb.net/pokedex/national for list of pokemons
 
 import os
 import sys
@@ -597,8 +598,8 @@ def log(message):  # simple wrapper for logging to stdout on heroku
 def sendNotificationToSubscribedUsers(pokemon_id, message):
 
     # check who all are subscribed to this pokemon
-    log('notification method called')
-    log('pokemon id for this notification===== ' + pokemon_id)
+    #log('notification method called')
+    log('pokemon id for this notification===== ' + str(pokemon_id))
     try:
         cnx = mysql.connector.connect(user='restokit_pokemon',
                 password='pokemon123', host='restokitch.com',
@@ -606,16 +607,17 @@ def sendNotificationToSubscribedUsers(pokemon_id, message):
         cursor = cnx.cursor()
 
         getusers_subscribed = \
-            'SELECT b.facebook_id FROM poke_subscribe p join bot_users b  on p.user_id= b.id WHERE p.pokemon_id = %s'
+            'SELECT DISTINCT (b.facebook_id) FROM poke_subscribe p join bot_users b  on p.user_id= b.id JOIN rare_pokemons r WHERE r.pokemon_id =%s'
         cursor.execute(getusers_subscribed, (pokemon_id, ))
         result_set = cursor.fetchall()
         fb_ids = []
         for row in result_set:
             fb_id = row[0]
-            #send_message(fb_id, message)
+            send_message(fb_id, message)
             fb_ids.append(fb_id)
-
-        print fb_ids
+            
+        myTuple_fbid = tuple(fb_ids)
+        log('fb id to send the message ' +str(myTuple_fbid))
 
         cursor.close()
         cnx.close()
@@ -646,7 +648,7 @@ def tweet():
               './pokemon.fr.json')) as data_file:
         idToPokemon = json.load(data_file)
 
-    url = 'http://5f84e015.ngrok.io' + '/rare'
+    url = 'http://23914fed.ngrok.io' + '/rare'
     response = urllib.urlopen(url)
     dump = json.loads(response.read())
     new = copy.deepcopy(dump)
@@ -682,48 +684,47 @@ def tweet():
 
             if t.time() + 300 < e_new['disappear_time'] / 1000:
                 print 'test13'
-                location = str(Geocoder.reverse_geocode(e_new['latitude'
-                               ], e_new['longitude'])[0]).split(',')
+                # location = str(Geocoder.reverse_geocode(e_new['latitude'
+                               # ], e_new['longitude'])[0]).split(',')
+                latitude=e_new['latitude']
+                longitude=e_new['longitude']
+                location=str(Geocoder.reverse_geocode(latitude, longitude)[0])
                                
-                log('location is '+location)
+                #log('location is '+location)
+                #time =datetime.fromtimestamp(e_new['disappear_time'] / 1000)
+                time=datetime.fromtimestamp(e_new['disappear_time']/ 1e3)
+                #log('time is '+str(time.hour))
                 
-                    
                 #log ('location'+location)
                 #latitude=str(e_new['latitude'])
                 #longitude=str(e_new['longitude'])
                 gmap = 'https://www.google.fr/maps/place/' \
                     + str(e_new['latitude']) + ',' \
                     + str(e_new['longitude']) + '/'
-                #log('latitude is '+latitude)
-                #log('longitude is '+longitude)
-                #log ('gmap is '+gmap)
+                
                 id_pokemon=e_new['pokemon_id']
                 pokemon_name=idToPokemon[str(e_new['pokemon_id'])]
                 #log('pokemon generated is == '+ pokemon_name)
                 
-                    
+                message=pokemon_name +' found at '+ location +' till '+str(time.hour)+':'+str(time.minute)+':'+str(time.second)
                 # message = \
-                    # "{} \xc3\xa0 {} jusqu'\xc3\xa0 {}:{}:{}. #PokemonGo {}".format(
-                    # pokemon_name,
-                    # destination,
-                    # hour,
-                    # str(time.minute).zfill(2),
-                    # str(time.second).zfill(2),
-                    # gmap,
-                    # )
+                     # "{} \xc3\xa0 {} jusqu'\xc3\xa0 {}:{}:{}. #PokemonGo {}".format(
+                     # pokemon_name,
+                     # location,
+                     # hour,
+                     # str(time.minute).zfill(2),
+                     # str(time.second).zfill(2),
+                     # gmap,
+                     # )
                     
-                #log ('message is == '+message)
+                log ('message is == ' + message)
                 try:
 
                     print 'i am ready to tweet'
-                    #sendNotificationToSubscribedUsers(e_new['pokemon_id'
-                    #        ], tweeting)
+                    sendNotificationToSubscribedUsers(id_pokemon, message)
                 except Exception, e:
-
-                    # send_message('1162610060480372', tweeting)
-                    # send_message('1077717795652613', tweeting)
-
-                    print 'Duplicate status, continuing on.'
+                    print e.value
+                    print 'A problem occurred while sending message to fb user.'
                     pass
                 #print tweeting
 
