@@ -721,7 +721,18 @@ def tweet():
                 try:
 
                     print 'i am ready to tweet'
+                    # with open(os.path.join(os.path.dirname(__file__),'./lastpokemon.json')) as data_file:
+                        # last_encounter = json.load(data_file)
+                    # last_encounter_id=last_encounter['pokemon'][0]['encounter_id']
+                    # log('last encounter id is == '+last_encounter_id)
+                    # if last_encounter_id==e_new['encounter_id'] :
+                        # log('same encounter id. no action taken.')
+                    #else :
                     sendNotificationToSubscribedUsers(id_pokemon, message)
+                    # last_encounter_json={"pokemon": [{"encounter_id":e_new['encounter_id']}]}
+                    # with open(os.path.join(os.path.dirname(__file__), './lastpokemon.json'),'w') as outfile:
+                        # json.load(last_encounter_json,outfile)
+                        
                 except Exception, e:
                     print e.value
                     print 'A problem occurred while sending message to fb user.'
@@ -730,7 +741,7 @@ def tweet():
 
           # Google api timeout
 
-                t.sleep(0.5)
+                #t.sleep(0.5)
 
     with open(os.path.join(os.path.dirname(__file__), './data.json'),
               'w') as outfile:
