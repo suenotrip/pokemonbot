@@ -204,9 +204,6 @@ def subscribe2pokemon(sender_id, pokemon_id):  # create new user
         cursor.execute(getuser_fbid, (sender_id, ))
         result_set = cursor.fetchall()
         for row in result_set:
-
-            # print "%s" % (row["id"])
-
             user_id = row[0]
 
         # check if this user is subscribed for this pokemon # if not, insert a new row
@@ -218,15 +215,32 @@ def subscribe2pokemon(sender_id, pokemon_id):  # create new user
         if not msg:
             print 'nope subscription does not exist'
             #get count of subscription and subscribe only if its less than purchased count
+            count_pokemon ='SELECT count(*) FROM poke_subscribe WHERE user_id = %s '
+            cursor.execute(count_pokemon, (user_id, ))
+            result_count = cursor.fetchall()
+            for row in result_count:
+                count_subscribed = row[0]
             
-            present_time = datetime.now()
-            add_user = \
-                'INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
-            cursor.execute(add_user, (user_id, pokemon_id,
-                           present_time))
-            message_text = 'You have been subscribed to this pokemon'
-            send_message(sender_id, message_text)
-            print 'new suscription added'
+            limit_pokemon ='SELECT count(*) FROM upgrade_subscription WHERE user_id = %s '
+            cursor.execute(limit_pokemon, (user_id, ))
+            limit_count = cursor.fetchall()
+            for row in limit_count:
+                limit_subscribed = row[0]*5
+            
+            if count_subscribed <(10+limit_subscribed) :            
+                present_time = datetime.now()
+                add_user = \
+                    'INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
+                cursor.execute(add_user, (user_id, pokemon_id,
+                               present_time))
+                message_text = 'You have been subscribed to this pokemon'
+                send_message(sender_id, message_text)
+                print 'new suscription added'
+            else:
+                #send a message with payment button
+                message_text='Sorry. You have already reached the full quota of subscription. Pay 5 USD to get 5 more subscriptions.'
+                send_message(sender_id,message_text)
+                carousel_payment(sender_id)
         else:
             print 'subscription exists'
             message_text = 'You are already subscribed to this pokemon'
@@ -385,9 +399,6 @@ def subscriptionCount(sender_id):
         cursor.execute(count_pokemon, (user_id, ))
         result_count = cursor.fetchall()
         for row in result_count:
-
-            # print "%s" % (row["id"])
-
             count = row[0]
 
         message_text = 'You are subscribed to ' + str(count) \
@@ -617,7 +628,30 @@ def createFBelement(
                     'payload': payload_text}],
         }
 
+def carousel_payment(recipient_id) :
+    params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
+    headers = {'Content-Type': 'application/json'}
+    url = 'http://stripe.restokitch.com/stripe.php?user_id=' \
+        + recipient_id
+    message = {'attachment': {'type': 'template',
+               'payload': {'template_type': 'generic', 'elements': [ {
+        'title': 'Pay to subscribe',
+        'image_url': 'https://ruter.no/contentassets/711a33afa4144b97b2f7d9772a49418a/reisekort_767x250.jpg'
+            ,
+        'subtitle': 'Pay to subscribe to more pokemons',
+        'buttons': [{'type': 'web_url', 'url': url, 'title': 'Pay 5 USD'
+                    }],
+        }]}}}
 
+    data = json.dumps({'recipient': {'id': recipient_id},
+                      'message': message})
+
+    r = requests.post('https://graph.facebook.com/v2.6/me/messages',
+                      params=params, headers=headers, data=data)
+    if r.status_code != 200:
+        log(r.status_code)
+        log(r.text)
+        
 def createFBelement4Unsubscribe(
     id,
     pokemon_id,
