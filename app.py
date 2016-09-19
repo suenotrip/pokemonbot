@@ -113,7 +113,11 @@ def webook():
 
                     handlePostback(payload, sender_id)
     elif data['object'] == 'stripe':
+        
         facebook_id = data['user_id']
+        #update count of this user
+        updateSubscriptionCount(facebook_id)
+        
         send_message(facebook_id, 'Congratulations!')
         send_message(facebook_id,
                      'Great, Your payment has been processed successfully! Now you can add more pokemons.'
@@ -213,6 +217,8 @@ def subscribe2pokemon(sender_id, pokemon_id):  # create new user
         msg = cursor.fetchone()
         if not msg:
             print 'nope subscription does not exist'
+            #get count of subscription and subscribe only if its less than purchased count
+            
             present_time = datetime.now()
             add_user = \
                 'INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
@@ -550,6 +556,37 @@ def sendList2Unsubscribe(recipient_id):
         cnx.close()
         print 'Something went wrong: {}'.format(err)
 
+        
+def updateSubscriptionCount(facebook_id) :
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon',
+                password='pokemon123', host='restokitch.com',
+                database='restokit_pokemon')
+        cursor = cnx.cursor()
+
+        getuser_fbid = 'SELECT id FROM bot_users WHERE facebook_id = %s'
+        cursor.execute(getuser_fbid, (facebook_id, ))
+        result_set = cursor.fetchall()
+        for row in result_set:
+            user_id = row[0]
+
+        # check if this user is subscribed for this pokemon # if not, insert a new row
+        increment=5
+        
+        count_upgrade = \
+            'INSERT INTO upgrade_subscription (user_id,upgrade_count) values (%s,%s)'
+        cursor.execute(count_upgrade, (user_id,increment))
+        
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error, err:
+        cursor.close()
+        cnx.close()
+        print 'Something went wrong: {}'.format(err)
+    
+    
+    
+    
 def createMoreElement(id):
     payload_text = 'subscribepokemon' + str(id)
     subtitle = 'Click the button below to check more pokemons & subscribe'
