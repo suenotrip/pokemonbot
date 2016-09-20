@@ -599,16 +599,16 @@ def sendList2Unsubscribe(recipient_id,sequence_id):
             element = createFBelement4Unsubscribe(id, pokemon_id,
                     pokemon_name, rarity)
             elements.append(element)
-            
-        if sequence_id==1 :
-            element = createMoreUnsubElement(1000)
-            elements.append(element)
-        elif sequence_id ==2 :
-            element = createMoreUnsubElement(2000)
-            elements.append(element)
-        elif sequence_id ==3 :
-            element = createMoreUnsubElement(3000)
-            elements.append(element)
+        if pokemon_count==9 :   
+            if sequence_id==1 :
+                element = createMoreUnsubElement(1000)
+                elements.append(element)
+            elif sequence_id ==2 :
+                element = createMoreUnsubElement(2000)
+                elements.append(element)
+            elif sequence_id ==3 :
+                element = createMoreUnsubElement(3000)
+                elements.append(element)
 
         cursor.close()
         cnx.close()
