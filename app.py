@@ -684,7 +684,7 @@ def carousel_payment(recipient_id,sub_id) :
     #sub_id=1==subscribe; sub_id=0==unsubscribe
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
-    url = 'http://stripe.restokitch.com/stripe.php?user_id='+ recipient_id +'&sub_id='+sub_id
+    url = 'http://stripe.restokitch.com/stripe.php?user_id='+ recipient_id +'&sub_id='+str(sub_id)
     message = {'attachment': {'type': 'template',
                'payload': {'template_type': 'generic', 'elements': [ {
         'title': 'Pay to subscribe',
