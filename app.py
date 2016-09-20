@@ -117,7 +117,7 @@ def webook():
         facebook_id = data['user_id']
         sub_id=data['sub_id']
         send_message(facebook_id, 'Congratulations!')
-        if sub_id==1 :
+        if sub_id=='1' :
             #update subscription count of this user
             updateSubscriptionCount(facebook_id)
             send_message(facebook_id,
