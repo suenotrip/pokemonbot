@@ -120,7 +120,7 @@ def webook():
         
         send_message(facebook_id, 'Congratulations!')
         send_message(facebook_id,
-                     'Great, Your payment has been processed successfully! Now you can add more pokemons.'
+                     'Great, Your payment has been processed successfully! Now you can subscribe to more pokemons.'
                      )
 
     return ('ok', 200)
@@ -265,9 +265,6 @@ def unsubscribe2pokemon(sender_id, pokemon_id):  # create new user
         cursor.execute(getuser_fbid, (sender_id, ))
         result_set = cursor.fetchall()
         for row in result_set:
-
-            # print "%s" % (row["id"])
-
             user_id = row[0]
 
         # check if this user is subscribed for this pokemon # if yes, delete the row
@@ -282,9 +279,17 @@ def unsubscribe2pokemon(sender_id, pokemon_id):  # create new user
                 'Sorry but you were not subscribed to this pokemon'
             send_message(sender_id, message_text)
         else:
+            #check if the user has paid to unsubscribe
+            
             add_user = \
                 'DELETE FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s'
             cursor.execute(add_user, (user_id, pokemon_id))
+            
+            #update the unsubscribe table by making an entry
+            present_time = datetime.now()
+            update_unsubscribe='INSERT INTO poke_unsubscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
+            cursor.execute(update_unsubscribe, (user_id, pokemon_id, present_time))
+            
             message_text = 'You have been unsubscribed to this pokemon'
             send_message(sender_id, message_text)
             print 'subscription deleted successfully'
