@@ -234,7 +234,12 @@ def subscribe2pokemon(sender_id, pokemon_id):  # create new user
             for row in limit_count:
                 limit_subscribed = row[0]*5
             
-            if count_subscribed <(2+limit_subscribed) :            
+            if limit_subscribed==0 and (pokemon_id==1 or pokemon_id==6 or pokemon_id==4) :
+                message_text = 'This pokemon is not available for free subscription. Please pay now and get 5 subscriptions.'
+                send_message(sender_id, message_text)
+                carousel_payment(sender_id,1)
+                
+            elif count_subscribed <(2+limit_subscribed) :            
                 present_time = datetime.now()
                 add_user = \
                     'INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
