@@ -297,7 +297,7 @@ def unsubscribe2pokemon(sender_id, pokemon_id):  # create new user
             for row in limit_count:
                 limit_unsubscribed = row[0]*5
             
-            if count_unsubscribed < limit_unsubscribed :                
+            if count_unsubscribed < (2+limit_unsubscribed) :                
                 delete_subscription = \
                     'DELETE FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s'
                 cursor.execute(delete_subscription, (user_id, pokemon_id))
