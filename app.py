@@ -115,8 +115,12 @@ def webook():
     elif data['object'] == 'stripe':
         
         facebook_id = data['user_id']
-        #update count of this user
-        updateSubscriptionCount(facebook_id)
+        sub_id=data['sub_id']
+        if sub_id==1 :
+            #update subscription count of this user
+            updateSubscriptionCount(facebook_id)
+        else :
+            updateUnsubscriptionCount(facebook_id)
         
         send_message(facebook_id, 'Congratulations!')
         send_message(facebook_id,
@@ -240,7 +244,7 @@ def subscribe2pokemon(sender_id, pokemon_id):  # create new user
                 #send a message with payment button
                 message_text='Sorry. You have already reached the full quota of subscription. Pay 5 USD to get 5 more subscriptions.'
                 send_message(sender_id,message_text)
-                carousel_payment(sender_id)
+                carousel_payment(sender_id,1)
         else:
             print 'subscription exists'
             message_text = 'You are already subscribed to this pokemon'
@@ -280,19 +284,38 @@ def unsubscribe2pokemon(sender_id, pokemon_id):  # create new user
             send_message(sender_id, message_text)
         else:
             #check if the user has paid to unsubscribe
+            #get count of subscription and subscribe only if its less than purchased count
+            count_pokemon_unsub ='SELECT count(*) FROM poke_unsubscribe WHERE user_id = %s '
+            cursor.execute(count_pokemon_unsub, (user_id, ))
+            result_count = cursor.fetchall()
+            for row in result_count:
+                count_unsubscribed = row[0]
             
-            add_user = \
-                'DELETE FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s'
-            cursor.execute(add_user, (user_id, pokemon_id))
+            limit_pokemon_unsub ='SELECT count(*) FROM edit_subscription WHERE user_id = %s '
+            cursor.execute(limit_pokemon_unsub, (user_id, ))
+            limit_count = cursor.fetchall()
+            for row in limit_count:
+                limit_unsubscribed = row[0]*5
             
-            #update the unsubscribe table by making an entry
-            present_time = datetime.now()
-            update_unsubscribe='INSERT INTO poke_unsubscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
-            cursor.execute(update_unsubscribe, (user_id, pokemon_id, present_time))
-            
-            message_text = 'You have been unsubscribed to this pokemon'
-            send_message(sender_id, message_text)
-            print 'subscription deleted successfully'
+            if count_unsubscribed < limit_unsubscribed :                
+                delete_subscription = \
+                    'DELETE FROM poke_subscribe WHERE user_id = %s and pokemon_id=%s'
+                cursor.execute(delete_subscription, (user_id, pokemon_id))
+                
+                #update the unsubscribe table by making an entry
+                present_time = datetime.now()
+                update_unsubscribe='INSERT INTO poke_unsubscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
+                cursor.execute(update_unsubscribe, (user_id, pokemon_id, present_time))
+                
+                message_text = 'You have been unsubscribed to this pokemon'
+                send_message(sender_id, message_text)
+                print 'subscription deleted successfully'
+                
+            else:
+                #send a message with payment button
+                message_text='Sorry. You have already reached the full quota of Unsubscribing. Pay 5 USD to get 5 more Unsubscriptions.'
+                send_message(sender_id,message_text)
+                carousel_payment(sender_id,0)
 
         cursor.close()
         cnx.close()
@@ -346,8 +369,7 @@ def ChecknInsertNewUser(sender_id):  # create new user
 def landingCarousel(recipient_id):
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
-    url = 'http://stripe.restokitch.com/stripe.php?user_id=' \
-        + recipient_id
+    url = 'http://stripe.restokitch.com/stripe.php?user_id=' + recipient_id +'&sub_id=1'
     message = {'attachment': {'type': 'template',
                'payload': {'template_type': 'generic', 'elements': [{
         'title': 'My Pokemon Subscriptions',
@@ -600,7 +622,32 @@ def updateSubscriptionCount(facebook_id) :
         cnx.close()
         print 'Something went wrong: {}'.format(err)
     
-    
+def updateUnsubscriptionCount(facebook_id) :
+    try:
+        cnx = mysql.connector.connect(user='restokit_pokemon',
+                password='pokemon123', host='restokitch.com',
+                database='restokit_pokemon')
+        cursor = cnx.cursor()
+
+        getuser_fbid = 'SELECT id FROM bot_users WHERE facebook_id = %s'
+        cursor.execute(getuser_fbid, (facebook_id, ))
+        result_set = cursor.fetchall()
+        for row in result_set:
+            user_id = row[0]
+
+        increment=5
+        
+        count_upgrade = \
+            'INSERT INTO edit_subscription (user_id,edit_count) values (%s,%s)'
+        cursor.execute(count_upgrade, (user_id,increment))
+        
+        cursor.close()
+        cnx.close()
+    except mysql.connector.Error, err:
+        cursor.close()
+        cnx.close()
+        print 'Something went wrong: {}'.format(err)
+        
     
     
 def createMoreElement(id):
@@ -633,11 +680,11 @@ def createFBelement(
                     'payload': payload_text}],
         }
 
-def carousel_payment(recipient_id) :
+def carousel_payment(recipient_id,sub_id) :
+    #sub_id=1==subscribe; sub_id=0==unsubscribe
     params = {'access_token': os.environ['PAGE_ACCESS_TOKEN']}
     headers = {'Content-Type': 'application/json'}
-    url = 'http://stripe.restokitch.com/stripe.php?user_id=' \
-        + recipient_id
+    url = 'http://stripe.restokitch.com/stripe.php?user_id='+ recipient_id +'&sub_id='+sub_id
     message = {'attachment': {'type': 'template',
                'payload': {'template_type': 'generic', 'elements': [ {
         'title': 'Pay to subscribe',
