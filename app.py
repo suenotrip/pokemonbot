@@ -116,15 +116,17 @@ def webook():
         
         facebook_id = data['user_id']
         sub_id=data['sub_id']
+        send_message(facebook_id, 'Congratulations!')
         if sub_id==1 :
             #update subscription count of this user
             updateSubscriptionCount(facebook_id)
+            send_message(facebook_id,
+                     'Great, Your payment has been processed successfully! Now you can subscribe to more pokemons.'
+                     )
         else :
             updateUnsubscriptionCount(facebook_id)
-        
-        send_message(facebook_id, 'Congratulations!')
-        send_message(facebook_id,
-                     'Great, Your payment has been processed successfully! Now you can subscribe to more pokemons.'
+            send_message(facebook_id,
+                     'Great, Your payment has been processed successfully! Now you can unsubscribe and then subscribe to more pokemons.'
                      )
 
     return ('ok', 200)
@@ -185,6 +187,8 @@ def handlePostback(payload, sender_id):
             sendList2subscribe(sender_id,2)
         elif pokemon_id==2000 :
             sendList2subscribe(sender_id,3)
+        elif pokemon_id==3000 :
+            sendList2subscribe(sender_id,4)
         else :
             subscribe2pokemon(sender_id, pokemon_id)
     elif re.search('(unsubspokemon.*)', payload):
@@ -193,7 +197,6 @@ def handlePostback(payload, sender_id):
     elif payload == 'getmysubscriptions':
         subscriptionCount(sender_id)
     elif payload == 'getsubscribelist':
-
         sendList2subscribe(sender_id,1)
 
 
@@ -465,6 +468,8 @@ def sendList2subscribe(recipient_id,sequence_id):
             fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>9 and id<19 '
         elif sequence_id==3 :
             fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>18 and id<28 '
+        elif sequence_id==4 :
+            fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id>27 and id<37 '
         else :
             fetch_pokemon ='SELECT id,pokemon_id,pokemon_name,rarity FROM rare_pokemons where id<9 '
             
@@ -484,6 +489,9 @@ def sendList2subscribe(recipient_id,sequence_id):
             elements.append(element)
         elif sequence_id ==2 :
             element = createMoreElement(2000)
+            elements.append(element)
+        elif sequence_id ==3 :
+            element = createMoreElement(3000)
             elements.append(element)
         
         cursor.close()
