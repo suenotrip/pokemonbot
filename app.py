@@ -139,7 +139,7 @@ def rules4messages(sender_id, message_text):
     else:
 
         if msg == 'UNSUBSCRIBE':
-            sendList2Unsubscribe(sender_id)
+            sendList2Unsubscribe(sender_id,1)
         elif msg == 'SUBSCRIBE':
 
             sendList2subscribe(sender_id,1)
@@ -193,7 +193,14 @@ def handlePostback(payload, sender_id):
             subscribe2pokemon(sender_id, pokemon_id)
     elif re.search('(unsubspokemon.*)', payload):
         pokemon_id = int(payload[13:])
-        unsubscribe2pokemon(sender_id, pokemon_id)
+        if pokemon_id==1000 :
+            sendList2Unsubscribe(sender_id,2)
+        elif pokemon_id==2000 :
+            sendList2Unsubscribe(sender_id,3)
+        elif pokemon_id==3000 :
+            sendList2Unsubscribe(sender_id,4)
+        else :
+            unsubscribe2pokemon(sender_id, pokemon_id)
     elif payload == 'getmysubscriptions':
         subscriptionCount(sender_id)
     elif payload == 'getsubscribelist':
@@ -444,7 +451,7 @@ def subscriptionCount(sender_id):
             send_message(sender_id, message_text)
             sendList2subscribe(sender_id,1)
         else:
-            sendList2Unsubscribe(sender_id)
+            sendList2Unsubscribe(sender_id,1)
 
         cursor.close()
         cnx.close()
@@ -521,7 +528,7 @@ def sendList2subscribe(recipient_id,sequence_id):
         print 'Something went wrong: {}'.format(err)
 
 
-def sendList2Unsubscribe(recipient_id):
+def sendList2Unsubscribe(recipient_id,sequence_id):
 
     message_text = 'You are subscribed to these pokemons.'
     send_message(recipient_id, message_text)
@@ -546,9 +553,16 @@ def sendList2Unsubscribe(recipient_id):
             user_id = row[0]
 
         # get pokemon_ids subscribed for this user
-
-        my_subscribed_pokemons = \
-            'SELECT pokemon_id FROM poke_subscribe where user_id=%s'
+        if sequence_id==2 :
+            my_subscribed_pokemons ='SELECT pokemon_id FROM poke_subscribe where user_id=%s ORDER BY DATETIME DESC LIMIT 9,19'
+        elif sequence_id==3 :
+            my_subscribed_pokemons ='SELECT pokemon_id FROM poke_subscribe where user_id=%s ORDER BY DATETIME DESC LIMIT 19,29 '
+        elif sequence_id==4 :
+            my_subscribed_pokemons ='SELECT pokemon_id FROM poke_subscribe where user_id=%s ORDER BY DATETIME DESC LIMIT 29,39 '
+        else :
+            my_subscribed_pokemons ='SELECT pokemon_id FROM poke_subscribe where user_id=%s ORDER BY DATETIME DESC LIMIT 0,9'
+            
+        
         log('sql_query' + my_subscribed_pokemons)
         cursor.execute(my_subscribed_pokemons, (user_id, ))
         result_my_pokemons = cursor.fetchall()
@@ -584,6 +598,16 @@ def sendList2Unsubscribe(recipient_id):
             rarity = row[3]
             element = createFBelement4Unsubscribe(id, pokemon_id,
                     pokemon_name, rarity)
+            elements.append(element)
+            
+        if sequence_id==1 :
+            element = createMoreUnsubElement(1000)
+            elements.append(element)
+        elif sequence_id ==2 :
+            element = createMoreUnsubElement(2000)
+            elements.append(element)
+        elif sequence_id ==3 :
+            element = createMoreUnsubElement(3000)
             elements.append(element)
 
         cursor.close()
@@ -675,6 +699,18 @@ def createMoreElement(id):
                     'payload': payload_text}],
         }
         
+        
+def createMoreUnsubElement(id):
+    payload_text = 'unsubspokemon' + str(id)
+    subtitle = 'Click the button below to check more of the pokemons you are subscribed to'
+    img_url = 'http://www.siriusxm.ca/wp-content/uploads/2014/08/EN-More.png'
+    return {
+        'title': 'More pokemons',
+        'image_url': img_url,
+        'subtitle': subtitle,
+        'buttons': [{'type': 'postback', 'title': 'More Pokemons',
+                    'payload': payload_text}],
+        }        
 def createFBelement(
     id,
     pokemon_id,
