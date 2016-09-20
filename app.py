@@ -227,7 +227,7 @@ def subscribe2pokemon(sender_id, pokemon_id):  # create new user
             for row in limit_count:
                 limit_subscribed = row[0]*5
             
-            if count_subscribed <(10+limit_subscribed) :            
+            if count_subscribed <(2+limit_subscribed) :            
                 present_time = datetime.now()
                 add_user = \
                     'INSERT INTO poke_subscribe(user_id,pokemon_id,datetime)VALUES (%s, %s,%s)'
